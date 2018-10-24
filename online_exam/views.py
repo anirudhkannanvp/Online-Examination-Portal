@@ -8,3 +8,5 @@ from .models import course, user, topic, subtopic, question_type, level, exam_de
 def home(request):
     return render(request ,'online_exam/home.html')
 # Create your views here.
+def student(request):
+	return render(request, 'online_exam/student_home.html')
