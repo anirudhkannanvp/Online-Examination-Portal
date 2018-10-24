@@ -33,7 +33,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Google Font -->
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        href="{% static "font-awesome.css" %}">
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -82,14 +82,14 @@ desired effect
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Mn9V4Hwmf9p1BlAZsj1BJvdlZTzMvIO8Ax4JBHv6ZQA_jsSB" class="user-image" alt="User Image">
+              <img src="{% static "image.jpeg" %}" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
               <span class="hidden-xs">Subhadeep Dash</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Mn9V4Hwmf9p1BlAZsj1BJvdlZTzMvIO8Ax4JBHv6ZQA_jsSB" class="img-circle" alt="User Image">
+                <img src="{% static "image.jpeg" %}" class="img-circle" alt="User Image">
 
                 <p>
                   Subhadeep Dash
@@ -97,12 +97,13 @@ desired effect
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
+                <!--<div class="pull-left">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
-                <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
-                </div>
+                <div class="pull-right">-->
+                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+				        <!--<div>-->
+                <!--</div>-->
               </li>
             </ul>
           </li>
@@ -119,10 +120,10 @@ desired effect
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Mn9V4Hwmf9p1BlAZsj1BJvdlZTzMvIO8Ax4JBHv6ZQA_jsSB" class="img-circle" alt="User Image">
+          <img src="{% static "teacher-icon.png" %}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Subhadeep Dash</p>
+          <p>Faculty Portal</p>
         </div>
       </div>
 
@@ -204,7 +205,7 @@ desired effect
           </ul>
         </li>
         <li><a href="#"><i class="fa fa-user"></i> <span>Profile</span></a></li>
-        <li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>
+        <!--<li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>-->
       </ul>
       <!-- /.sidebar-menu -->
     </section>
