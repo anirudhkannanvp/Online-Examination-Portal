@@ -83,3 +83,12 @@ def faculty_profile(request):
 # Create your views here.
 def student_dashboard(request):
 	return render(request, 'online_exam/student_dashboard.html')
+
+def student_exams(request):
+	return render(request, 'online_exam/student_exams.html')
+
+def student_progress(request):
+	return render(request, 'online_exam/student_progress.html')
+
+def student_profile(request):
+	return render(request, 'online_exam/student_profile.html')

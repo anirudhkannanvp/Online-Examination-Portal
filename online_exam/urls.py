@@ -27,4 +27,7 @@ urlpatterns = [
     url(r'^faculty_view_subtopics/$', views.faculty_view_subtopics, name='faculty_view_subtopics'),
     url(r'^faculty_view_questions/$', views.faculty_view_questions, name='faculty_view_questions'),
     url(r'^student_dashboard/$', views.student_dashboard, name='student_dashboard'),
+    url(r'^student_exams/$', views.student_exams, name='student_exams'),
+    url(r'^student_profile/$', views.student_profile, name='student_profile'),
+    url(r'^student_progress/$', views.student_progress, name='student_progress'),
 ]
