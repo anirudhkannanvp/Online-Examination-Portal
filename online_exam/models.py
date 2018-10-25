@@ -8,6 +8,7 @@ class course(models.Model):
     course_name = models.CharField(default = "", max_length=100)
     description = models.TextField(null="True", blank=True)
     faculty = models.CharField(default = "", max_length=100)
+    status = models.IntegerField(default = 1)
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
@@ -20,6 +21,7 @@ class user(models.Model):
     email = models.CharField(default = "", max_length =100)
     password = models.CharField(default = "", max_length=100)
     account_type = models.IntegerField()
+    status = models.IntegerField(default = 1)
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
@@ -34,6 +36,7 @@ class level(models.Model):
 class topic(models.Model):
     topic_name = models.CharField(default = "", max_length = 100)
     description = models.TextField(null="True", blank=True)
+    status = models.IntegerField(default = 1)
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
@@ -43,6 +46,7 @@ class subtopic(models.Model):
     subtopic_name = models.CharField(default = "", max_length = 100)
     description = models.TextField(null="True", blank=True)
     topic_id = models.ForeignKey(topic, on_delete = models.CASCADE)
+    status = models.IntegerField(default = 1)
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
@@ -76,6 +80,7 @@ class question_bank(models.Model):
     level_id = models.ForeignKey(level, on_delete = models.CASCADE)
     exam_id = models.ForeignKey(exam_detail, on_delete =models.CASCADE)
     score = models.FloatField()
+    status = models.IntegerField(default = 1)
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
