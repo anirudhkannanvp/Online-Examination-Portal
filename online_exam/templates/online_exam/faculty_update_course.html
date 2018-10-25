@@ -9,7 +9,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>IIITS| Dashboard</title>
+  <title>IIITS| Update_Course</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
@@ -217,12 +217,12 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Modify Course
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-book"></i>Courses</a></li>
+        <li><a href="../faculty_modify_course"><i class="fa fa-pencil"></i>Modify Course</a></li>
+        <li class="active">Update Course</li>
       </ol>
     </section>
 
@@ -232,6 +232,60 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+        <div class="container" style="width:100%">
+        <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-7">
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Modify Course</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action = "../faculty_modify_course/" method="POST">{% csrf_token %}
+              <div class="box-body">
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputName" name="course_name" value="{{ data.course_name }}" type="text" required>
+                  </div>
+                  <input type = "hidden" name = "id" value = "{{data.id}}">
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputDescription" name="description" value="{{ data.description }}" type="text" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <input class="form-control" name="faculty" id="inputFaculty" value="{{ data.faculty }}" type="text" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status" required>
+                    {% if data.status == 1 %}
+                   <option value="1" selected="selected"> Active </option>
+                   <option value="0"> Inactive </option>
+                   {% elif data.status == 0 %}
+                   <option value="1"> Active </option>
+                   <option value="0" selected="selected"> Inactive </option>
+                   {% endif %}
+                   </select>
+                  </div>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">Modify course</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          </div>
+          <div class="col-lg-3"></div></div>
+
+    </div>
 
     </section>
   </div>

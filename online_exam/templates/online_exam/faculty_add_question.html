@@ -217,12 +217,11 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Add question
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-question-circle"></i><b> Questions</b></a></li>
+        <li class="active"><i class="fa fa-plus"></i><b> Questions</b></li>
       </ol>
     </section>
 
@@ -232,6 +231,135 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+
+        <div class="container">
+        <div class="row">
+        <div class="col-lg-10">
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Add question</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal">
+              <div class="box-body">
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Course</option>
+                            <option value = "1">DIP</option>
+                            <option value = "0">IR</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Examination</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Topic</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Subtopic</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                </div><div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Level</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Status</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                </div><div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status">
+                    <option disabled selected value>   Question type</option>
+                            <option value = "1">Active</option>
+                            <option value = "0">Inactive</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <input class="form-control" id="inputName" placeholder="Score" type="text" required>
+                  </div>
+                </div>
+              <div class="form-group">
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputName" placeholder="Question" type="text" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputDescription" placeholder="Description" type="text" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status" id="noq" onchange="myFunction()">
+                    <option disabled selected value>   Number of options</option>
+                            <option value = "2">2</option>
+                            <option value = "3">3</option>
+                            <option value = "4">4</option>
+                            <option value = "5">5</option>
+                            <option value = "6">6</option>
+                            <option value = "7">7</option>
+                            <option value = "8">8</option>
+                            <option value = "9">9</option>
+                            <option value = "10">10</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6"></div>
+              </div>
+              
+                  
+            
+                    
+                  
+              
+              
+              <div id="my_div"></div>
+                      <script type="text/javascript">
+                      function myFunction(){
+                        var a=document.getElementById("noq");
+                        var b = a.options[a.selectedIndex].value;
+                        console.log(b);
+                        document.getElementById("my_div").innerHTML = "";
+                        for (i=1;i<=b;i++)
+                        {
+                          my_div.innerHTML = my_div.innerHTML +"<div class='form-group'><label for='inputStatus' class='col-sm-1 control-label'>"+i+"</label><div class='col-sm-6'><input class='form-control' id='inputDescription' placeholder='' type='text' required></div><div class='col-sm-3'><div class='radio'><input name='optionsRadios' id='optionsRadios1' value='option1' checked='' type='radio'></div></div></div>"
+                        }
+                      }
+                      </script>
+
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">Add course</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          </div>
+          <div class="col-lg-1"></div></div>
+
+    </div>
 
     </section>
   </div>

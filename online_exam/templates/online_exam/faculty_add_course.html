@@ -9,7 +9,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>IIITS| Dashboard</title>
+  <title>IIITS| Add_Course</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
@@ -215,12 +215,11 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Add Course
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-book"></i>Courses</a></li>
+        <li class="active"><i class="fa fa-plus"></i>Add Course</li>
       </ol>
     </section>
 
@@ -230,7 +229,72 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+        <div class="container" style="width:100%">
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+        <div class="col-lg-7">
+        {% if message %}
+      <div class="callout callout-success">
+        <p>{{message}}</p>
+      </div>
+      {% elif wrong_message %}
+      <div class="callout callout-danger">
+        <p>{{wrong_message}}</p>
+      </div>
+      {% endif %}
 
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Add a course</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action = "{% url 'faculty_add_course' %}" method="POST">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="inputName" class="col-sm-2 control-label">Name</label>
+
+                  <div class="col-sm-10">
+                    <input class="form-control" name="course_name" placeholder="Name" type="text" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription" class="col-sm-2 control-label">Description</label>
+
+                  <div class="col-sm-10">
+                    <input class="form-control" name="description" placeholder="Description" type="text" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="inputFaculty" class="col-sm-2 control-label">Faculty</label>
+
+                  <div class="col-sm-5">
+                    <input class="form-control" name="faculty" placeholder="Faculty Name" type="text" required>
+                  </div>
+				  <label for="inputStatus" class="col-sm-2 control-label">Status</label>
+				  <div class="col-sm-3">
+					  <select class="form-control" name="status" required>
+					  		  <option disabled selected value>Select</option>
+	                          <option value = "1">Active</option>
+	                          <option value = "0">Inactive</option>
+	                  </select>
+	              </div>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">Add course</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          </div>
+          <div class="col-lg-3"></div></div>
+
+		</div>
     </section>
   </div>
   <footer class="main-footer">
