@@ -54,7 +54,7 @@ def faculty_update_question(request):
     return render(request ,'online_exam/faculty_update_question.html')
 
 def faculty_view_courses(request):
-    return render(request ,'online_exam/faculty_view_courses.html')
+    return render(request ,'online_exam/faculty_view_courses.html', {"courses":course.objects.all()})
 
 def faculty_view_exams(request):
     return render(request ,'online_exam/faculty_view_exams.html')

@@ -12,7 +12,7 @@ class course(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.course_name) + ";;" + str(self.description) + ";;" + str(status) + ";;" + str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.course_name) + ";;" + str(self.description) + ";;" + str(self.status) + ";;" + str(self.created) + ";;" + str(self.modified)
 
 class user(models.Model):
     first_name = models.CharField(default = "", max_length = 100)
@@ -25,7 +25,7 @@ class user(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.first_name) + ";;" + str(self.last_name) + ";;" + str(self.phone) + ";;" + str(self.email) + ";;" + str(self.password) + ";;" + str(self.account_type) + ";;" + str(status) + ";;" + str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.first_name) + ";;" + str(self.last_name) + ";;" + str(self.phone) + ";;" + str(self.email) + ";;" + str(self.password) + ";;" + str(self.account_type) + ";;" + str(self.status) + ";;" + str(self.created) + ";;" + str(self.modified)
 
 class level(models.Model):
     level_name = models.CharField(default = "", max_length = 100)
@@ -40,7 +40,7 @@ class topic(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.topic_name) + ";;" + str(self.description) + ";;" + str(status) + ";;" + str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.topic_name) + ";;" + str(self.description) + ";;" + str(self.status) + ";;" + str(self.created) + ";;" + str(self.modified)
     
 class subtopic(models.Model):
     subtopic_name = models.CharField(default = "", max_length = 100)
@@ -50,7 +50,7 @@ class subtopic(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.subtopic_name) + ";;" + str(self.description) + ";;" + str(self.topic_id) + ";;" + str(status) + ";;" + str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.subtopic_name) + ";;" + str(self.description) + ";;" + str(self.topic_id) + ";;" + str(self.status) + ";;" + str(self.created) + ";;" + str(self.modified)
 
 class exam_detail(models.Model):
     exam_name = models.CharField(default = "", max_length = 100)
@@ -66,7 +66,7 @@ class exam_detail(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.exam_name) + ";;" + str(self.description) + ";;" + str(self.start_time) + ";;" + str(self.end_time) + ";;" + str(self.no_of_questions) + ";;" + str(self.attempts_allowed) + ";;" + str(self.pass_percentage) + ";;" + str(self.course_id) + ";;" + str(self.year) + ";;" + str(status) + ";;" + str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.exam_name) + ";;" + str(self.description) + ";;" + str(self.start_time) + ";;" + str(self.end_time) + ";;" + str(self.no_of_questions) + ";;" + str(self.attempts_allowed) + ";;" + str(self.pass_percentage) + ";;" + str(self.course_id) + ";;" + str(self.year) + ";;" + str(self.status) + ";;" + str(self.created) + ";;" + str(self.modified)
 
 class question_type(models.Model):
     q_type = models.CharField(default = "", max_length = 100)
@@ -85,7 +85,7 @@ class question_bank(models.Model):
     created = models.DateTimeField(default = timezone.now)
     modified = models.DateTimeField(default = timezone.now)
     def __str__(self):
-        return str(self.id) + ";;" + str(self.question) + ";;" + str(self.description) + ";;" + str(self.question_type) + ";;" + str(self.subtopic_id) + ";;" + str(self.level_id) + ";;" + str(self.exam_id) + ";;" + str(self.score) + ";;" + str(status) + ";;" +  str(self.created) + ";;" + str(self.modified)
+        return str(self.id) + ";;" + str(self.question) + ";;" + str(self.description) + ";;" + str(self.question_type) + ";;" + str(self.subtopic_id) + ";;" + str(self.level_id) + ";;" + str(self.exam_id) + ";;" + str(self.score) + ";;" + str(self.status) + ";;" +  str(self.created) + ";;" + str(self.modified)
 
 class registration(models.Model):
     user_id = models.ForeignKey(user, on_delete = models.CASCADE)
