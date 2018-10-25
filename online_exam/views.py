@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+import datetime
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import course, user, topic, subtopic, question_type, level, exam_detail, question_bank,  option, answer, registration, result
@@ -15,7 +15,20 @@ def faculty_add_exam(request):
     return render(request ,'online_exam/faculty_add_exam.html')
 
 def faculty_add_topic(request):
-    return render(request ,'online_exam/faculty_add_topic.html')
+    if(request.POST.get('topic_name', False) != False and request.POST.get('status', False) != False and request.POST.get('description', False) != False):
+        temp = topic()
+        temp.topic_name = request.POST['topic_name']
+        temp.description = request.POST['description']
+        temp.status = request.POST['status']
+        if(topic.objects.filter(topic_name=temp.topic_name).count() == 0):
+            temp.save()
+            message = "Topic was successfully added!!"
+            return render(request ,'online_exam/faculty_add_topic.html', {"message":message})
+        else:
+            wrong_message = "Sorry, topic already exists!!"
+            return render(request ,'online_exam/faculty_add_topic.html', {"wrong_message":wrong_message})
+    else:
+        return render(request ,'online_exam/faculty_add_topic.html')
 
 def faculty_add_subtopic(request):
     return render(request ,'online_exam/faculty_add_subtopic.html')
@@ -30,7 +43,20 @@ def faculty_modify_exam(request):
     return render(request ,'online_exam/faculty_modify_exam.html')
 
 def faculty_modify_topic(request):
-    return render(request ,'online_exam/faculty_modify_topic.html')
+    if(request.POST.get('id', False) != False and request.POST.get('topic_name', False) != False and request.POST.get('status', False) != False and request.POST.get('description', False) != False):
+        temp = topic()
+        temp.topic_id = request.POST['id']
+        temp.topic_name = request.POST['topic_name']
+        temp.description = request.POST['description']
+        temp.status = request.POST['status']
+        if(topic.objects.filter(topic_name=temp.topic_name).count() == 0 and topic.objects.filter(id=temp.topic_id).update(topic_name=temp.topic_name, description = temp.description, status = temp.status, modified = datetime.datetime.now())):
+            message = "Topic was updated successfully!!"
+            return render(request ,'online_exam/faculty_add_topic.html', {"message":message})
+        else:
+            wrong_message = "Sorry, the topic already exists!!"
+            return render(request ,'online_exam/faculty_add_topic.html', {"wrong_message":wrong_message})
+    else:
+        return render(request ,'online_exam/faculty_modify_topic.html', {"topics":topic.objects.all()})
 
 def faculty_modify_subtopic(request):
     return render(request ,'online_exam/faculty_modify_subtopic.html')
@@ -45,7 +71,8 @@ def faculty_update_exam(request):
     return render(request ,'online_exam/faculty_update_exam.html')
 
 def faculty_update_topic(request):
-    return render(request ,'online_exam/faculty_update_topic.html')
+    result = topic.objects.get(pk = int(request.POST['id']))
+    return render(request ,'online_exam/faculty_update_topic.html', {"result": result})
 
 def faculty_update_subtopic(request):
     return render(request ,'online_exam/faculty_update_subtopic.html')
@@ -60,7 +87,7 @@ def faculty_view_exams(request):
     return render(request ,'online_exam/faculty_view_exams.html')
 
 def faculty_view_topics(request):
-    return render(request ,'online_exam/faculty_view_topics.html')
+    return render(request ,'online_exam/faculty_view_topics.html', {"topics":topic.objects.all()})
 
 def faculty_view_subtopics(request):
     return render(request ,'online_exam/faculty_view_subtopics.html')

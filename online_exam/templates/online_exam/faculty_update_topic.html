@@ -9,7 +9,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>IIITS| Dashboard</title>
+  <title>IIITS| Update_topic</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
@@ -217,23 +217,99 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Topics
+        <small></small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-list"></i> Topics &nbsp;&nbsp; > &nbsp;&nbsp;<i class="fa fa-pencil"></i> Modify Topic &nbsp;&nbsp; > &nbsp;&nbsp; Update Topic</a></li>
+        <!--<li class="active">You are here</li>-->
       </ol>
     </section>
 
-    <!-- Main content -->
+     <!-- Main content -->
     <section class="content container-fluid">
-
+      {% if message %}
+      <div class="callout callout-success">
+        <p>{{message}}</p>
+      </div>
+      {% elif wrong_message %}
+      <div class="callout callout-danger">
+        <p>{{wrong_message}}</p>
+      </div>
+      {% endif %}
+<div class="container">
+            <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-7">
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+        <div class="box box-info">
+            <div class="box-header with-border">
+             <h3 class="box-title">Modify Topic</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            
+            <form class="form-horizontal" action = "../faculty_modify_topic/" method="POST">{% csrf_token %}
+              <div class="box-body">
+                <div class="form-group">
+                <div></div>
+                  <!--<label for="inputTopicName" class="col-sm-2 control-label">Name</label>-->
 
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputTopicName" name = "topic_name" value = "{{result.topic_name}}" type="text" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <!--<label for="inputDescription" class="col-sm-2 control-label">Description</label>-->
+
+                  <div class="col-sm-12">
+                    <input class="form-control" id="inputDescription" name = "description" value="{{result.description}}" type="text" required>
+                  </div>
+                  <input type = "hidden" name = "id" value = "{{result.id}}">
+                </div>
+                <div class="form-group">
+                  <!--<label for="inputDescription" class="col-sm-2 control-label">Description</label>-->
+					<div class="col-sm-4"></div>
+					<div class="col-sm-4"></div>
+                  <div class="col-sm-4">
+                  <select class="form-control" name="status" required>
+                    {% if result.status == 1 %}
+                   <option value="1" selected="selected"> Active </option>
+                   <option value="0"> Inactive </option>
+                   {% elif result.status == 0 %}
+                   <option value="1"> Active </option>
+                   <option value="0" selected="selected"> Inactive </option>
+                   {% endif %}
+                   </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                   
+                   <!--<div class="checkbox">
+                      <label>
+                        <input type="checkbox"> Remember me
+                      </label>
+                    </div>-->
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <!--<button type="submit" class="btn btn-default">Cancel</button>-->
+                <button type="submit" class="btn btn-info pull-right">Modify topic</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+            </div>
+          </div>
+	<div class="col-lg-3"></div>
+	</div></div>
     </section>
+
   </div>
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
