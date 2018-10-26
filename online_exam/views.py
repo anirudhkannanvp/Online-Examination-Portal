@@ -27,8 +27,31 @@ def faculty_add_course(request):
             return render(request,'online_exam/faculty_add_course.html',{"wrong_message":wrong_message})   
     else:
         return render(request,'online_exam/faculty_add_course.html')    
+@csrf_exempt
 def faculty_add_exam(request):
-    return render(request ,'online_exam/faculty_add_exam.html')
+	if(request.POST.get('exam_name', False) != False and request.POST.get('description', False) != False and request.POST.get('course_id', False) != False and request.POST.get('year', False) != False and request.POST.get('status', False) != False and request.POST.get('startDate', False) != False and request.POST.get('endDate', False) != False and request.POST.get('startTime', False) != False and request.POST.get('endTime', False) != False and request.POST.get('pass_percentage', False) != False and request.POST.get('no_of_questions', False) != False and request.POST.get('attempts_allowed', False) != False):
+		temp = exam_detail()
+		temp.exam_name = request.POST['exam_name']
+		temp.description = request.POST['description']
+		temp.course_id = course.objects.get(course_name=request.POST['course_id'])
+		temp.year = request.POST['year']
+		temp.status = request.POST['status']
+		temp.start_time = request.POST['startDate']+" "+request.POST['startTime']
+		temp.end_time = request.POST['endDate']+" "+request.POST['endTime']
+		temp.pass_percentage = request.POST['pass_percentage']
+		temp.no_of_questions = request.POST['no_of_questions']
+		temp.attempts_allowed = request.POST['attempts_allowed']
+		if(exam_detail.objects.filter(exam_name=temp.exam_name).count() == 0):
+			temp.save()
+			print("saved")
+			message = "Examination was successfully added!"
+			return render(request ,'online_exam/faculty_add_exam.html', {"message":message})
+		else:
+			wrong_message = "Sorry, exam already exists!"
+			return render(request ,'online_exam/faculty_add_exam.html', {"wrong_message":wrong_message})
+	else:
+		print("else entered")
+		return render(request ,'online_exam/faculty_add_exam.html', {"exams":exam_detail.objects.all()})
 
 def faculty_add_topic(request):
     if(request.POST.get('topic_name', False) != False and request.POST.get('status', False) != False and request.POST.get('description', False) != False):
@@ -88,8 +111,36 @@ def faculty_modify_course(request):
     else:
         return render(request ,'online_exam/faculty_modify_course.html', {"courses":course.objects.all()})
 
+@csrf_exempt
 def faculty_modify_exam(request):
-    return render(request ,'online_exam/faculty_modify_exam.html')
+	print("entered")
+	print("id---------------------------------------------------------", request.POST.get('id'))
+	if(request.POST.get('id', False) != False and request.POST.get('exam_name', False) != False and request.POST.get('exam_name', False) != False and request.POST.get('description', False) != False and request.POST.get('course_id', False) != False and request.POST.get('year', False) != False and request.POST.get('status', False) != False and request.POST.get('startDate', False) != False and request.POST.get('endDate', False) != False and request.POST.get('startTime', False) != False and request.POST.get('endTime', False) != False and request.POST.get('pass_percentage', False) != False and request.POST.get('no_of_questions', False) != False and request.POST.get('attempts_allowed', False) != False):
+		#if request.method == 'POST':
+		temp = exam_detail()
+		print("if entered")
+		temp.id = request.POST['id']
+		temp.exam_name = request.POST['exam_name']
+		temp.description = request.POST['description']
+		temp.course_id = course.objects.get(course_name=request.POST['course_id'])
+		temp.year = request.POST['year']
+		temp.status = request.POST['status']
+		temp.start_time = request.POST['startDate']+" "+request.POST['startTime']
+		temp.end_time = request.POST['endDate']+" "+request.POST['endTime']
+		temp.pass_percentage = request.POST['pass_percentage']
+		temp.no_of_questions = request.POST['no_of_questions']
+		temp.attempts_allowed = request.POST['attempts_allowed']
+		if(exam_detail.objects.filter(exam_name=temp.exam_name).count() == 0):
+			exam_detail.objects.filter(id=temp.id).update(exam_name=temp.exam_name, description=temp.description, course_id=temp.course_id, year=temp.year, status=temp.status, start_time=temp.start_time, end_time=temp.end_time, pass_percentage=temp.pass_percentage, no_of_questions=temp.no_of_questions, attempts_allowed=temp.attempts_allowed, modified=datetime.datetime.now())
+			print("saved")
+			message = "Examination was successfully updated!"
+			return render(request ,'online_exam/faculty_modify_exam.html', {"message":message, "exams": exam_detail.objects.all()})
+		else:
+			wrong_message = "Sorry, exam already exists!"
+			return render(request ,'online_exam/faculty_modify_exam.html', {"wrong_message":wrong_message, "exams": exam_detail.objects.all()})
+	else:
+		print("else entered")
+		return render(request ,'online_exam/faculty_modify_exam.html', {"exams":exam_detail.objects.all()})
 
 def faculty_modify_topic(request):
     if(request.POST.get('id', False) != False and request.POST.get('topic_name', False) != False and request.POST.get('status', False) != False and request.POST.get('description', False) != False):
@@ -145,8 +196,11 @@ def faculty_update_course(request):
         data = course.objects.get(pk = int(request.POST['id']))
         return render(request ,'online_exam/faculty_update_course.html', {"data": data})
 
+@csrf_exempt
 def faculty_update_exam(request):
-    return render(request ,'online_exam/faculty_update_exam.html')
+	#print("id---------------------------------------------------------", int(request.POST['id']))
+	result = exam_detail.objects.get(pk= int(request.POST['id']))
+	return render(request ,'online_exam/faculty_update_exam.html', {"result": result, "courses":course.objects.all()})
 
 def faculty_update_topic(request):
     result = topic.objects.get(pk = int(request.POST['id']))
@@ -163,8 +217,11 @@ def faculty_update_question(request):
 def faculty_view_courses(request):
     return render(request ,'online_exam/faculty_view_courses.html', {"courses":course.objects.all()})
 
+@csrf_exempt
 def faculty_view_exams(request):
-    return render(request ,'online_exam/faculty_view_exams.html')
+	data = exam_detail.objects.all()
+	#print(data)
+	return render(request ,'online_exam/faculty_view_exams.html', {"exams":exam_detail.objects.all()})
 
 def faculty_view_topics(request):
     return render(request ,'online_exam/faculty_view_topics.html', {"topics":topic.objects.all()})
