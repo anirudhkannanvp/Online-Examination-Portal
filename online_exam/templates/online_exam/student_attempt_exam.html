@@ -144,8 +144,8 @@ desired effect
       <span class="logo-lg"><b><img src="{% static "logo.png" %}" alt="My image" style="float:left;width:45px;height:45px;"> Online</b> Exam</span>
     </a>
 
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
+     <!-- Header Navbar -->
+     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
@@ -159,7 +159,7 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="{% static "image.jpeg" %}" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Subhadeep Dash</span>
+              <span class="hidden-xs">{{request.session.first_name}} {{request.session.last_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -167,7 +167,7 @@ desired effect
                 <img src="{% static "image.jpeg" %}" class="img-circle" alt="User Image">
 
                 <p>
-                  Subhadeep Dash
+                  {{request.session.first_name}} {{request.session.last_name}}
                 </p>
               </li>
               <!-- Menu Footer-->
@@ -176,8 +176,8 @@ desired effect
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">-->
-				<!--<div>-->
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <a href="../sign_out" class="btn btn-default btn-flat">Sign out</a>
+				        <!--<div>-->
                 <!--</div>-->
               </li>
             </ul>

@@ -84,7 +84,7 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="{% static "image.jpeg" %}" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Subhadeep Dash</span>
+              <span class="hidden-xs">{{request.session.first_name}} {{request.session.last_name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -92,7 +92,7 @@ desired effect
                 <img src="{% static "image.jpeg" %}" class="img-circle" alt="User Image">
 
                 <p>
-                  Subhadeep Dash
+                  {{request.session.first_name}} {{request.session.last_name}}
                 </p>
               </li>
               <!-- Menu Footer-->
@@ -101,7 +101,7 @@ desired effect
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">-->
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <a href="../sign_out" class="btn btn-default btn-flat">Sign out</a>
 				        <!--<div>-->
                 <!--</div>-->
               </li>

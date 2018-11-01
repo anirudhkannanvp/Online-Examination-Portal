@@ -280,9 +280,9 @@ desired effect
                   <label for="inputCourse" class="col-sm-2 control-label">Course</label>
                  <div class="col-sm-10"> 
                  <select class="form-control" name="course_id" required>
-                          <option disabled selected value>select option</option>
-                          {% for i in exams %}
-                            <option value = "{{ i.course_id.course_name }}">{{ i.course_id.course_name }}</option>
+                          <option disabled selected value>Select option</option>
+                          {% for i in courses %}
+                            <option value = "{{i.id}}">{{ i.course_name }}</option>
                           {% endfor %}
                   </select>
                   </div>

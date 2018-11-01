@@ -32,4 +32,7 @@ urlpatterns = [
     url(r'^student_verify/', views.student_verify, name='student_verify'),
     url(r'^student_profile/$', views.student_profile, name='student_profile'),
     url(r'^student_progress/$', views.student_progress, name='student_progress'),
+    url(r'^login/$', views.login, name='login'),
+    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^sign_out/$', views.sign_out, name='sign_out'),
 ]

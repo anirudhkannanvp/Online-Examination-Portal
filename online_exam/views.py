@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-#from __future__ import unicode_literals
+from __future__ import unicode_literals
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 import json
-from django.shortcuts import render
+import md5
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from  django.contrib.auth.hashers import make_password, check_password
 from .models import course, user, topic, subtopic, question_type, level, exam_detail, question_bank,  option, answer, registration, result
 
 def faculty_dashboard(request):
@@ -33,7 +35,7 @@ def faculty_add_exam(request):
 		temp = exam_detail()
 		temp.exam_name = request.POST['exam_name']
 		temp.description = request.POST['description']
-		temp.course_id = course.objects.get(course_name=request.POST['course_id'])
+		temp.course_id = course.objects.get(id=request.POST['course_id'])
 		temp.year = request.POST['year']
 		temp.status = request.POST['status']
 		temp.start_time = request.POST['startDate']+" "+request.POST['startTime']
@@ -51,7 +53,7 @@ def faculty_add_exam(request):
 			return render(request ,'online_exam/faculty_add_exam.html', {"wrong_message":wrong_message})
 	else:
 		print("else entered")
-		return render(request ,'online_exam/faculty_add_exam.html', {"exams":exam_detail.objects.all()})
+		return render(request ,'online_exam/faculty_add_exam.html', {"courses":course.objects.all()})
 
 def faculty_add_topic(request):
     if(request.POST.get('topic_name', False) != False and request.POST.get('status', False) != False and request.POST.get('description', False) != False):
@@ -314,3 +316,34 @@ def student_progress(request):
 
 def student_profile(request):
 	return render(request, 'online_exam/student_profile.html')
+
+def login(request):
+    if(request.method == "POST" and request.POST.get('email', False) != False and request.POST.get('password', False) != False):
+        if(user.objects.filter(email = request.POST['email']).exists()):
+            login_user = user.objects.get(email = request.POST['email'])
+            request.session['id'] = login_user.id
+            request.session['first_name'] = login_user.first_name
+            request.session['last_name'] = login_user.last_name
+            request.session['email'] = login_user.email
+            request.session['phone'] = login_user.phone
+            request.session['account_type'] = login_user.account_type
+            return redirect('../faculty_dashboard')
+        else:
+            return render(request, 'online_exam/Login.html', {"message":"Invalid Credentials!!"})
+    return render(request, 'online_exam/Login.html')
+
+def signup(request):
+    if(request.method == "POST" and request.POST.get('first_name', False) != False and request.POST.get('last_name', False) != False and request.POST.get('email', False) != False and request.POST.get('phone', False) != False):
+        new_user = user(first_name = request.POST['first_name'], last_name = request.POST['last_name'], phone = request.POST['phone'], email = request.POST['email'], password = make_password(request.POST['password']))
+        if(user.objects.filter(email=request.POST['email']).exists()):
+            error_message = "Email ID already exists!!"
+            return render(request, 'online_exam/Signup.html', {"error_message":error_message})
+        else:
+            new_user.save()
+            message = "Account Created Successfully!!"
+            return render(request, 'online_exam/Signup.html', {"message":message})
+    return render(request, 'online_exam/Signup.html')    
+    
+def sign_out(request):
+    request.session.flush()
+    return redirect('../login')
