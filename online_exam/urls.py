@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^sign_out/$', views.sign_out, name='sign_out'),
+    url(r'^authenticate/(?P<token>[A-Za-z0-9_\.-]*)/$', views.authenticate, name='authenticate'),
 ]

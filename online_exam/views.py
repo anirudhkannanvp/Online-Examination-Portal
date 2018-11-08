@@ -3,10 +3,10 @@ from __future__ import unicode_literals
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 import json
-import md5
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from  django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password, check_password
+import requests
 from .models import course, user, topic, subtopic, question_type, level, exam_detail, question_bank,  option, answer, registration, result
 
 def faculty_dashboard(request):
@@ -413,13 +413,16 @@ def login(request):
         if(request.method == "POST" and request.POST.get('email', False) != False and request.POST.get('password', False) != False):
             if(user.objects.filter(email = request.POST['email']).exists()):
                 login_user = user.objects.get(email = request.POST['email'])
-                request.session['id'] = login_user.id
-                request.session['first_name'] = login_user.first_name
-                request.session['last_name'] = login_user.last_name
-                request.session['email'] = login_user.email
-                request.session['phone'] = login_user.phone
-                request.session['account_type'] = login_user.account_type
-                return redirect('../faculty_dashboard')
+                if (check_password(request.POST.get('password', False),login_user.password) == True):
+                    request.session['id'] = login_user.id
+                    request.session['first_name'] = login_user.first_name
+                    request.session['last_name'] = login_user.last_name
+                    request.session['email'] = login_user.email
+                    request.session['phone'] = login_user.phone
+                    request.session['account_type'] = login_user.account_type
+                    return redirect('../login')
+                else:
+                    return render(request, 'online_exam/Login.html', {"message":"Invalid Credentials!!"})
             else:
                 return render(request, 'online_exam/Login.html', {"message":"Invalid Credentials!!"})
         return render(request, 'online_exam/Login.html')
@@ -444,3 +447,28 @@ def signup(request):
 def sign_out(request):
     request.session.flush()
     return redirect('../login')
+
+def authenticate(request, token=None):
+    clientSecret = "1c616e2f378f9aa90c936b1560e6d0c372fa5e5a54457356f39573955e7e64b445d2f03673a8905088b43c114465020825f48b79e8ce85b0e20e6ad8b736e860"
+    Payload = { 'token': token, 'secret': clientSecret }
+    k = requests.post("https://serene-wildwood-35121.herokuapp.com/oauth/getDetails", Payload)
+    data = json.loads(k.content) 
+    print(data['student'][0]['Student_Email'])
+    user_email = data['student'][0]['Student_Email']
+    if(user.objects.filter(email=user_email).exists() == False):
+        new_user = user()
+        new_user.first_name = data['student'][0]['Student_First_Name']
+        new_user.last_name = data['student'][0]['Student_Last_name']
+        new_user.email = data['student'][0]['Student_Email']
+        new_user.phone = data['student'][0]['Student_Mobile']
+        new_user.password = make_password("iamstudent")
+        new_user.save()
+    login_user = user.objects.get(email = user_email)
+    request.session['id'] = login_user.id
+    request.session['first_name'] = login_user.first_name
+    request.session['last_name'] = login_user.last_name
+    request.session['email'] = login_user.email
+    request.session['phone'] = login_user.phone
+    request.session['account_type'] = login_user.account_type
+    return redirect('login')
+    #return HttpResponse("HI")
