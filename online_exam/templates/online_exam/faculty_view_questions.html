@@ -274,6 +274,8 @@ desired effect
 		<th>Exam</th>
 		<th>Score</th>
                 <th>Topic name</th>
+                <th>Options</th>
+                <th>Answers</th>
                 <th>Status</th>
                 <th>Created</th>
                 <th>Modified</th>
@@ -281,7 +283,7 @@ desired effect
         </thead>
         <tbody>
       {% for i in questions %}
-        <tr><td>{{i.question}}</td><td>{{i.description}}</td><td>{{i.question_type}}</td><td>{{i.subtopic}}</td><td>{{i.level}}</td><td>{{i.exam}}</td><td>{{i.score}}</td><td>{{i.topic_name}}</td><td>
+        <tr><td>{{i.question}}</td><td>{{i.description}}</td><td>{{i.question_type}}</td><td>{{i.subtopic}}</td><td>{{i.level}}</td><td>{{i.exam}}</td><td>{{i.score}}</td><td>{{i.topic_name}}</td><td>{{i.options}}</td><td>{{i.answers}}</td><td>
           {% if i.status == 1 %}
           Active
           {% elif i.status == 0 %}

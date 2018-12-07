@@ -281,7 +281,40 @@ def faculty_modify_subtopic(request):
 
 def faculty_modify_question(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
-        return render(request ,'online_exam/faculty_modify_question.html')
+        V=[]
+        for i in question_bank.objects.all():
+            A = dict()
+            A['question'] = i.question
+            A['description'] = i.description
+            A['question_type'] = i.question_type.q_type
+            A['subtopic'] = i.subtopic_id.subtopic_name
+            if(A['question_type']  == "Multiple Choice Single Answer" or A['question_type'] == "Multiple Choice Multiple Answer"):
+                options = ""
+                for j in option.objects.filter(question_id = i).all():
+                    options += (j.option_value + "; ")
+                A['options'] = options
+                answers = ""
+                for j in answer.objects.filter(question_id = i).all():
+                    answers += (option.objects.get(question_id = i, option_no=j.answer).option_value + "; ")
+                A['answers'] = answers
+            elif(A['question_type'] == "Match the Columns"):
+                A['options'] = "None"
+                A['answers'] = ""
+                for j in MatchTheColumns.objects.filter(question_id = i).all():
+                    A['answers'] += j.question + " - " + j.answer + "; "
+            else:
+                A['options'] = "None"
+                solution = answer.objects.get(question_id = i)
+                A['answers'] = solution.answer
+            A['level'] = i.level_id.level_name
+            A['exam'] = i.exam_id.exam_name
+            A['score'] = i.score
+            A['created'] = i.created
+            A['modified'] = i.modified
+            A['status'] = i.status
+            A['topic_name'] = (i.subtopic_id.topic_id.topic_name)
+            V.append(A)
+        return render(request ,'online_exam/faculty_modify_question.html', {"questions":V})
     else:
         return redirect("../login")
 
@@ -326,7 +359,7 @@ def faculty_update_subtopic(request):
 
 def faculty_update_question(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
-        return render(request ,'online_exam/faculty_update_question.html')
+        return render(request ,'online_exam/faculty_update_question.html', {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all()})
     else:
         return redirect("../login")
 
@@ -381,6 +414,19 @@ def faculty_view_questions(request):
                 for j in option.objects.filter(question_id = i).all():
                     options += (j.option_value + "; ")
                 A['options'] = options
+                answers = ""
+                for j in answer.objects.filter(question_id = i).all():
+                    answers += (option.objects.get(question_id = i, option_no=j.answer).option_value + "; ")
+                A['answers'] = answers
+            elif(A['question_type'] == "Match the Columns"):
+                A['options'] = "None"
+                A['answers'] = ""
+                for j in MatchTheColumns.objects.filter(question_id = i).all():
+                    A['answers'] += j.question + " - " + j.answer + "; "
+            else:
+                A['options'] = "None"
+                solution = answer.objects.get(question_id = i)
+                A['answers'] = solution.answer
             A['level'] = i.level_id.level_name
             A['exam'] = i.exam_id.exam_name
             A['score'] = i.score
