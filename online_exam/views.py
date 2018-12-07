@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime
 import json
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.contrib.auth.hashers import make_password, check_password
 import requests
 from .models import course, user, topic, subtopic, question_type, level, exam_detail, question_bank,  option, answer, registration, result
@@ -16,7 +16,7 @@ def faculty_dashboard(request):
         return redirect("../login")
 
 @csrf_exempt
-def faculty_add_course(srequest):
+def faculty_add_course(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
         if request.method=="POST":
             temp = course()
@@ -105,7 +105,7 @@ def faculty_add_subtopic(request):
         return redirect("../login")
 def faculty_add_question(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
-        return render(request ,'online_exam/faculty_add_question.html')
+        return render(request ,'online_exam/faculty_add_question.html', {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all()})
     else:
         return redirect("../login")
 
@@ -117,13 +117,14 @@ def faculty_modify_course(request):
             temp.course_id = request.POST['id']
             temp.course_name = request.POST['course_name']
             temp.description = request.POST['description']
+            temp.faculty = request.POST['faculty']
             temp.status = request.POST['status']
             if(course.objects.filter(course_name=temp.course_name).count() == 0 ):
                 course.objects.filter(id=temp.course_id).update(course_name=temp.course_name, description = temp.description, status = temp.status, modified = datetime.datetime.now())
                 message = "Course was updated successfully!!"
                 return render(request ,'online_exam/faculty_modify_course.html', {"courses":course.objects.all(),"message":message})
             elif(course.objects.filter(course_name = temp.course_name).count() == 1 and list(course.objects.filter(course_name=temp.course_name).values("id"))[0]['id'] == int(request.POST['id'])):
-                course.objects.filter(id=temp.course_id).update(course_name=temp.course_name, description = temp.description, status = temp.status, modified = datetime.datetime.now())
+                course.objects.filter(id=temp.course_id).update(course_name=temp.course_name, description = temp.description, faculty=temp.faculty, status = temp.status, modified = datetime.datetime.now())
                 message = "Course was updated successfully!!"
                 return render(request ,'online_exam/faculty_modify_course.html', {"courses":course.objects.all(),"message":message})
             else:
@@ -453,7 +454,7 @@ def authenticate(request, token=None):
     Payload = { 'token': token, 'secret': clientSecret }
     k = requests.post("https://serene-wildwood-35121.herokuapp.com/oauth/getDetails", Payload)
     data = json.loads(k.content) 
-    print(data['student'][0]['Student_Email'])
+    """print(data['student'][0]['Student_Email'])
     user_email = data['student'][0]['Student_Email']
     if(user.objects.filter(email=user_email).exists() == False):
         new_user = user()
@@ -469,6 +470,26 @@ def authenticate(request, token=None):
     request.session['last_name'] = login_user.last_name
     request.session['email'] = login_user.email
     request.session['phone'] = login_user.phone
-    request.session['account_type'] = login_user.account_type
+    request.session['account_type'] = login_user.account_type"""
+    print(data)
     return redirect('login')
-    #return HttpResponse("HI")
+
+def get_exams_by_course(request):
+    if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0 and request.POST.get('course_id', False) != False):
+        exams = dict()
+        j = 0
+        for i in (exam_detail.objects.filter(course_id=course.objects.filter(id = request.POST.get('course_id', False)).all()).values("id", "exam_name")):
+            exams[i['id']] = i['exam_name']
+            j += 1
+        return HttpResponse(json.dumps(exams))
+    return HttpResponseNotFound('<h1>Page not found</h1>')
+
+def get_subtopics_by_topic(request):
+    if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0 and request.POST.get('topic_id', False) != False):
+        subtopics = dict()
+        j = 0
+        for i in (subtopic.objects.filter(topic_id=topic.objects.filter(id = request.POST.get('topic_id', False)).all()).values("id", "subtopic_name")):
+            subtopics[i['id']] = i['subtopic_name']
+            j += 1
+        return HttpResponse(json.dumps(subtopics))
+    return HttpResponseNotFound('<h1>Page not found</h1>')

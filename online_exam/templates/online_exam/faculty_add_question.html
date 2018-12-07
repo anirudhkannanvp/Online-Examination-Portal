@@ -245,63 +245,63 @@ desired effect
               <div class="box-body">
                 <div class="form-group">
                   <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Course</option>
-                            <option value = "1">DIP</option>
-                            <option value = "0">IR</option>
+                    <select class="form-control" name="course" id = "course" required>
+                    <option disabled selected value>Course</option>
+                      {% for i in courses %}      
+                      <option value = "{{i.id}}">{{i.course_name}}</option>
+                      {% endfor %}
                     </select>
                   </div>
                   <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Examination</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
+                    <select class="form-control" name="exam" id = "exam" required>
+                    <option disabled selected value>Examination</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Topic</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
+                    <select class="form-control" name="topic" id = "topic" required>
+                    <option disabled selected value>Topic</option>
+                      {% for i in topics %}
+                        <option value = "{{i.id}}">{{i.topic_name}}</option>
+                      {% endfor %}
                     </select>
                   </div>
                   <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Subtopic</option>
+                    <select class="form-control" name="subtopic" id = "subtopic" required>
+                    <option disabled selected value>Subtopic</option>
+                    </select>
+                  </div>
+                </div><div class="form-group">
+                  <div class="col-sm-6">
+                    <select class="form-control" name="level" required>
+                    <option disabled selected value>Level</option>
+                    {% for i in levels %}
+                      <option value = "{{i.id}}">{{i.level_name}}</option>
+                    {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <select class="form-control" name="status" required>
+                    <option disabled selected value>Status</option>
                             <option value = "1">Active</option>
                             <option value = "0">Inactive</option>
                     </select>
                   </div>
                 </div><div class="form-group">
                   <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Level</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Status</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
-                    </select>
-                  </div>
-                </div><div class="form-group">
-                  <div class="col-sm-6">
-                    <select class="form-control" name="status">
-                    <option disabled selected value>   Question type</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
+                    <select class="form-control" name="question_type" id = "type" required>
+                    <option disabled selected value>Question type</option>
+                      {% for i in question_type %}
+                        <option value = "{{i.id}}">{{i.q_type}}</option>
+                      {% endfor %}
                     </select>
                   </div>
                   <div class="col-sm-6">
                     <input class="form-control" id="inputName" placeholder="Score" type="text" required>
                   </div>
                 </div>
-              <div class="form-group">
+              <!--<div class="form-group">
                   <div class="col-sm-12">
                     <input class="form-control" id="inputName" placeholder="Question" type="text" required>
                   </div>
@@ -327,15 +327,20 @@ desired effect
                     </select>
                   </div>
                   <div class="col-sm-6"></div>
+              </div>-->
+              <div class = "container" id = "question" style="width:100%">
+                  
               </div>
-              
+              <div class = "container" id = "out" style="width:100%">
+                  
+              </div>
                   
             
                     
                   
               
               
-              <div id="my_div"></div>
+              <!--<div id="my_div"></div>
                       <script type="text/javascript">
                       function myFunction(){
                         var a=document.getElementById("noq");
@@ -347,11 +352,11 @@ desired effect
                           my_div.innerHTML = my_div.innerHTML +"<div class='form-group'><label for='inputStatus' class='col-sm-1 control-label'>"+i+"</label><div class='col-sm-6'><input class='form-control' id='inputDescription' placeholder='' type='text' required></div><div class='col-sm-3'><div class='radio'><input name='optionsRadios' id='optionsRadios1' value='option1' checked='' type='radio'></div></div></div>"
                         }
                       }
-                      </script>
+                      </script>-->
 
 
               <div class="box-footer">
-                <button type="submit" class="btn btn-info pull-right">Add course</button>
+                <button type="submit" class="btn btn-info pull-right"><i class="fa fa-plus">Add question</i></button>
               </div>
               <!-- /.box-footer -->
             </form>
@@ -373,5 +378,180 @@ desired effect
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
 <script src="{% static "dist/js/adminlte.min.js" %}"></script>
+<script>
+  $(document).ready(function(){
+    createQuestion();
+    
+  });
+  $("#type").change(function(){
+      createQuestion();
+  });
+$("#course").change(function(){
+  changeExam();
+});
+function changeExam(){
+  var course_id = $("#course option:selected").val();
+  $.ajax({
+    type: "POST",
+    url: '{% url 'get_exams_by_course' %}',
+    data: {course_id:course_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+    dataType: 'text',
+    success:function(data){
+      var options = JSON.parse(data);
+      $("#exam").empty();
+      var list = document.getElementById("exam");
+      var default_option = new Option("Examination", "", true, true);
+      default_option.setAttribute("disabled", true);
+      list.add(default_option);
+      for (obj in options)
+      {  
+        list.add(new Option(options[obj], obj));
+      }
+      //console.log(JSON.parse(data));
+    },
+    error: function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        console.log(msg);
+    },
+  });
+}
+</script>
+<script>
+  $("#topic").change(function(){
+    changeSubtopic();
+  });
+  function changeSubtopic(){
+    var topic_id = $("#topic option:selected").val();
+    $.ajax({
+      type: "POST",
+      url: '{% url 'get_subtopics_by_topic' %}',
+      data: {topic_id:topic_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+      dataType: 'text',
+      success:function(data){
+        var options = JSON.parse(data);
+        $("#subtopic").empty();
+        var list = document.getElementById("subtopic");
+        var default_option = new Option("Subtopic", "", true, true);
+        default_option.setAttribute("disabled", true);
+        list.add(default_option);
+        for (obj in options)
+        {  
+          list.add(new Option(options[obj], obj));
+        }
+        //console.log(JSON.parse(data));
+      },
+      error: function (jqXHR, exception) {
+          var msg = '';
+          if (jqXHR.status === 0) {
+              msg = 'Not connect.\n Verify Network.';
+          } else if (jqXHR.status == 404) {
+              msg = 'Requested page not found. [404]';
+          } else if (jqXHR.status == 500) {
+              msg = 'Internal Server Error [500].';
+          } else if (exception === 'parsererror') {
+              msg = 'Requested JSON parse failed.';
+          } else if (exception === 'timeout') {
+              msg = 'Time out error.';
+          } else if (exception === 'abort') {
+              msg = 'Ajax request aborted.';
+          } else {
+              msg = 'Uncaught Error.\n' + jqXHR.responseText;
+          }
+          console.log(msg);
+      },
+    });
+  }
+  function createQuestion()
+  {
+      var a = $('#type').find(":selected").text();
+      if(a != "Select")
+      {
+          var text = "";
+          text += "<div class = 'row'><div class= 'col-lg-12'><textarea name = 'question' class='form-control' rows=3 style='width:100%;font-weight:bold;margin-left:10px' placeholder='Enter your question here' required></textarea><br><br></div></div>"
+          text += "<div class = 'row'><div class= 'col-lg-12'><textarea name = 'description' class='form-control' rows=3 style='width:100%;font-weight:bold;margin-left:10px' placeholder='Enter your description here' required></textarea><br><br></div></div>"
+          if(a == "Multiple Choice Single Answer")
+          {
+              text += "<div class = 'row'><div class= 'col-lg-12'><span style='font-weight:200;margin-left:10px'><h5>Enter the no. of options:</h5></span></div></div><div class = 'row'><div class= 'col-lg-12'><select class='form-control' name=options_number id='in' onchange='optionsMCQ()' required><option value = ''>Select</option><option value = '2'>2</option><option value = '3'>3</option><option value = '4'>4</option><option value = '5'>5</option><option value = '6'>6</option><option value = '7'>7</option><option value = '8'>8</option><option value = '9'>9</option><option value = '10'>10</option></select></div></div>";                                    
+          }
+          else if(a == "Multiple Choice Multiple Answer")
+          {
+            text += "<div class = 'row'><div class= 'col-lg-12'><span style='font-weight:200;margin-left:10px'><h5>Enter the no. of options:</h5></span></div></div><div class = 'row'><div class= 'col-lg-12'><select class='form-control' name=options_number id='in' onchange='optionsMCMQ()' required><option value = ''>Select</option><option value = '2'>2</option><option value = '3'>3</option><option value = '4'>4</option><option value = '5'>5</option><option value = '6'>6</option><option value = '7'>7</option><option value = '8'>8</option><option value = '9'>9</option><option value = '10'>10</option></select></div></div>";                                    
+          }
+          else if(a =="Match the Column")
+          {
+            text += "<div class = 'row'><div class= 'col-lg-12'><span style='font-weight:200;margin-left:10px'><h5>Enter the no. of questions:</h5></span></div></div><div class = 'row'><div class= 'col-lg-12'><select class='form-control' name=questions_number id='in' onchange='MTC()' required><option value = ''>Select</option><option value = '2'>2</option><option value = '3'>3</option><option value = '4'>4</option><option value = '5'>5</option><option value = '6'>6</option><option value = '7'>7</option><option value = '8'>8</option><option value = '9'>9</option><option value = '10'>10</option></select></div></div>";                                    
+          }
+          else if(a == "Short Answer"||a=="Long Answer")
+          {
+              text += "<div class = 'row'><div class= 'col-lg-12'><textarea name='answer' class='form-control' rows=3 style='width:100%;font-weight:bold;margin-left:10px' placeholder='Enter your answer here' required></textarea></div></div>";
+          }
+          text += "<br><br>";
+          document.getElementById('question').innerHTML = text;
+          document.getElementById('out').innerHTML = "";
+      }
+      else
+      {
+        document.getElementById('question').innerHTML = "";
+        document.getElementById('out').innerHTML = "";
+      }
+  }
+  function optionsMCQ()
+  {
+      var i, text = "";
+      if($("#in option:selected").val() != "")
+      {
+        text = '<div class="row form-group"><div class="col-lg-1"><strong>Option no.</strong></div><div class="col-lg-5"><strong>Option value</strong></div><div class="col-lg-2"><strong>Select the correct answer</strong></div></div>';
+        a = document.getElementById('in').value;
+        for(i = 1; i <= a; i++)
+        {	
+            text += '<div class="row form-group"><div class = "col-lg-1">' + String.fromCharCode(96 + i) + ')</div><div class="col-lg-5"><input type = text class = "form-control" name = option' + i +' required></div><div class="col-lg-2"><input type="radio" name = "options" value = ' + i + ' required></div></div>';			
+        }
+      }
+      document.getElementById('out').innerHTML = text;
+  }
+  function optionsMCMQ()
+  {
+    var i;
+    if($("#in option:selected").val() != "")
+    {
+      var text = '<div class="row form-group"><div class="col-lg-1"><strong>Option no.</strong></div><div class="col-lg-5"><strong>Option value</strong></div><div class="col-lg-2"><strong>Select the correct answers</strong></div></div>';
+      a = document.getElementById('in').value;
+      for(i = 1; i <= a; i++)
+      {	
+          text += '<div class="row form-group"><div class = "col-lg-1">' + String.fromCharCode(96 + i) + ')</div><div class="col-lg-5"><input type = text class = "form-control" name = option' + i +' required></div><div class="col-lg-2"><input type="checkbox" name = "options[]" value = ' + i + ' id = option' + i +'></div></div>';			
+      }
+      document.getElementById('out').innerHTML = text;
+    }
+  }
+  function MTC()
+  {
+    var i;
+    if($("#in option:selected").val() != "")
+    {
+      var text = '<div class="row form-group"><div class="col-lg-1"><strong>Question no.</strong></div><div class="col-lg-5"><strong>Question</strong></div><div class="col-lg-1"><strong>S no.</strong></div><div class="col-lg-5"><strong>Answer</strong></div></div>';
+      a = document.getElementById('in').value;
+      for(i = 1; i <= a; i++)
+      {	
+          text += '<div class="row form-group"><div class = "col-lg-1">' + String.fromCharCode(96 + i) + ')</div><div class="col-lg-5"><input type = text class = "form-control" name = matchQues' + i +' required></div><div class="col-lg-1">'+ i +')</div><div class="col-lg-5"><input type = text class = "form-control" name = matchAns' + i +' required></div></div>';			
+      }
+      document.getElementById('out').innerHTML = text;
+    }
+  }
+  </script>
 </body>
 </html>

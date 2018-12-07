@@ -36,4 +36,6 @@ urlpatterns = [
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^sign_out/$', views.sign_out, name='sign_out'),
     url(r'^authenticate/(?P<token>[A-Za-z0-9_\.-]*)/$', views.authenticate, name='authenticate'),
+    url(r'^get_exams_by_course/$', views.get_exams_by_course, name='get_exams_by_course'),
+    url(r'^get_subtopics_by_topic/$', views.get_subtopics_by_topic, name='get_subtopics_by_topic'),
 ]
