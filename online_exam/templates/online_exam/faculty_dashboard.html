@@ -218,7 +218,7 @@ desired effect
     <section class="content-header">
       <h1>
         Dashboard
-        <small>See your progress and build up your skills</small>
+        <small>View the statistics of usage of your site</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -232,6 +232,70 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+
+
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>{{num_of_exams}}</h3>
+
+              <p>Examinations</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-check-square-o"></i>
+            </div>
+            <a href="../faculty_view_exams" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>{{num_of_questions}}<!--sup style="font-size: 20px">%</sup--></h3>
+
+              <p>Questions</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-question-circle"></i>
+            </div>
+            <a href="../faculty_view_questions" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>75<sup style="font-size: 20px">%</sup></h3>
+
+              <p>Pass Percentage</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-line-chart"></i>
+            </div>
+            <a href="../faculty_evaluate" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3>{{num_of_users}}</h3>
+
+              <p>User Registrations</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-users"></i>
+            </div>
+            <a href="../faculty_user_registrations" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+      
+
 
     </section>
   </div>

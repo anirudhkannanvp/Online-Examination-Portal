@@ -280,10 +280,14 @@ desired effect
                   <label for="inputName" class="col-sm-2 control-label">Course</label>
                   <div class="col-sm-10">
                     <select class="form-control" name="course_id" required>
-                          <option disabled selected value>Select Course Option</option>
-                          {% for i in courses %}
-                            <option value = "{{ i.course_name }}">{{ i.course_name }}</option>
-                          {% endfor %}
+                          <option value = "" disabled selected value>Select</option>
+                   {% for i in courses %}
+                      {% if i.id == result.course_id.id %}
+                        <option value = {{i.id}} selected="selected">{{i.course_name}}</option>
+                      {% else %}
+                        <option value = {{i.id}}>{{i.course_name}}</option>
+                      {% endif %}
+                   {% endfor %}
                   </select>
                   </div>
                 </div>
@@ -296,9 +300,13 @@ desired effect
                   <label for="inputName" class="col-sm-2 control-label">Status</label>
                   <div class="col-sm-4">
                     <select class="form-control" name="status" required>
-                    <option disabled selected value>   Select Activation Option</option>
-                            <option value = "1">Active</option>
-                            <option value = "0">Inactive</option>
+                   {% if result.status == 1 %}
+                   <option value="1" selected="selected"> Active </option>
+                   <option value="0"> Inactive </option>
+                   {% elif result.status == 0 %}
+                   <option value="1"> Active </option>
+                   <option value="0" selected="selected"> Inactive </option>
+                   {% endif %}
                     </select>
                   </div>
                 </div>
@@ -316,22 +324,22 @@ desired effect
                 <div class="form-group">
                   <label for="startDate" class="col-sm-2 control-label">Start Date</label>
                   <div class="col-sm-4">
-                    <input class="form-control" id="startDate" placeholder="startDate" type="date" name="startDate" value="start_time" required>
+                    <input class="form-control" id="startDate" type="date" name="startDate" value="{{start_date}}" required>
                   </div>
                   <label for="endDate" class="col-sm-2 control-label">End Date</label>
                   <div class="col-sm-4">
-                    <input class="form-control" type="date" name="endDate" id="endDate" placeholder="endDate" required>
+                    <input class="form-control" type="date" name="endDate" id="endDate" value="{{end_date}}" required>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="startTime" class="col-sm-2 control-label">Start Time</label>
                   <div class="col-sm-4">
-                    <input class="form-control" id="startTime" placeholder="hh:mm:ss" type="text" name="startTime" required>
+                    <input class="form-control" id="startTime" placeholder="hh:mm:ss" type="text" name="startTime" value = "{{start_time}}" required>
                   </div>
                   <label for="endTime" class="col-sm-2 control-label">End Time</label>
                   <div class="col-sm-4">
-                    <input class="form-control" type="text" name="endTime" id="endTime" placeholder="hh:mm:ss" required>
+                    <input class="form-control" type="text" name="endTime" id="endTime" placeholder="hh:mm:ss" value = "{{end_time}}"required>
                   </div>
                 </div>
 

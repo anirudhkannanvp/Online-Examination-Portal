@@ -11,7 +11,7 @@ from .models import course, user, topic, subtopic, question_type, level, exam_de
 
 def faculty_dashboard(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
-        return render(request ,'online_exam/faculty_dashboard.html')
+        return render(request ,'online_exam/faculty_dashboard.html', {"num_of_users":user.objects.count(), "num_of_exams":exam_detail.objects.count(), "num_of_questions":question_bank.objects.count()})
     else:
         return redirect("../login")
 
@@ -51,7 +51,7 @@ def faculty_add_exam(request):
             temp.pass_percentage = request.POST['pass_percentage']
             temp.no_of_questions = request.POST['no_of_questions']
             temp.attempts_allowed = request.POST['attempts_allowed']
-            if(exam_detail.objects.filter(exam_name=temp.exam_name).count() == 0):
+            if(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).count() == 0):
                 temp.save()
                 print("saved")
                 message = "Examination was successfully added!"
@@ -105,7 +105,67 @@ def faculty_add_subtopic(request):
         return redirect("../login")
 def faculty_add_question(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
-        return render(request ,'online_exam/faculty_add_question.html', {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all()})
+        """print(request.POST.get("question", False))
+        print(request.POST.get("description", False))
+        print(request.POST.get("question_type", False))
+        print(request.POST.get("subtopic", False))
+        print(request.POST.get("level", False))
+        print(request.POST.get("exam", False))
+        print(request.POST.get("score", False))
+        print(request.POST.get("status", False))"""
+        if(request.method == "POST" and request.POST.get("question", False) != False and request.POST.get("description", False) != False and request.POST.get("question_type", False) != False and request.POST.get("subtopic", False) != False and request.POST.get("level", False) != False and request.POST.get("exam", False) != False and request.POST.get("score", False) != False and request.POST.get("status", False) != False):
+            temp = question_bank()
+            temp.question =request.POST["question"] 
+            temp.description = request.POST["description"]
+            temp.question_type = question_type.objects.get(pk=request.POST["question_type"])
+            temp.subtopic_id = subtopic.objects.get(pk = request.POST["subtopic"])
+            temp.level_id = level.objects.get(pk =request.POST["level"])
+            temp.exam_id = exam_detail.objects.get(pk =request.POST["exam"])
+            temp.score = request.POST["score"]
+            temp.status = request.POST["status"]
+            if(question_bank.objects.filter(question = temp.question, subtopic_id = temp.subtopic_id).exists() == False):
+                temp.save()
+                question_id = question_bank.objects.get(question = temp.question, subtopic_id = temp.subtopic_id)
+                #print(temp)
+                #print(temp.question_type.q_type)
+                if(temp.question_type.q_type == "Multiple Choice Single Answer" or temp.question_type.q_type == "Multiple Choice Multiple Answer"):
+                    for i in range(1, int(request.POST["options_number"])+1):
+                        new_option = option()
+                        new_option.question_id = question_id
+                        new_option.option_no = i
+                        new_option.option_value = request.POST["option"+str(i)]
+                        new_option.save()
+                    if(temp.question_type.q_type == "Multiple Choice Single Answer"):
+                        temp_answer = answer()
+                        temp_answer.question_id = question_id
+                        temp_answer.answer = request.POST['options']
+                        temp_answer.save()
+                    elif(temp.question_type.q_type == "Multiple Choice Multiple Answer"):
+                        answers = request.POST.getlist('options[]')
+                        for i in answers:
+                            new_answer = answer()
+                            new_answer.question_id = question_id
+                            new_answer.answer = i
+                            new_answer.save()
+                elif(temp.question_type.q_type == "Match the Column"):
+                    for i in range(1, int(request.POST["questions_number"])+1):
+                        new_row = MatchTheColumns()
+                        new_row.question_id = question_id
+                        new_row.question = request.POST["matchQues" + str(i)]
+                        new_row.answer = request.POST["matchAns" + str(i)]
+                        new_row.save()
+                else:
+                    temp_answer = answer()
+                    temp_answer.question_id = question_id
+                    temp_answer.answer = request.POST['answer']
+                    temp_answer.save()
+                message = "Question was successfully created!!"
+                return render(request ,'online_exam/faculty_add_question.html',  {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all(), "message":message})
+            else:
+                wrong_message = "Sorry, question already exists under the subtopic!!"
+                return render(request ,'online_exam/faculty_add_question.html', {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all(), "wrong_message":wrong_message})   
+        else:
+            return render(request ,'online_exam/faculty_add_question.html', {"courses": course.objects.all(), "topics": topic.objects.all(), "levels": level.objects.all(), "question_type":question_type.objects.all()})
     else:
         return redirect("../login")
 
@@ -147,7 +207,7 @@ def faculty_modify_exam(request):
             temp.id = request.POST['id']
             temp.exam_name = request.POST['exam_name']
             temp.description = request.POST['description']
-            temp.course_id = course.objects.get(course_name=request.POST['course_id'])
+            temp.course_id = course.objects.get(pk=request.POST['course_id'])
             temp.year = request.POST['year']
             temp.status = request.POST['status']
             temp.start_time = request.POST['startDate']+" "+request.POST['startTime']
@@ -155,11 +215,13 @@ def faculty_modify_exam(request):
             temp.pass_percentage = request.POST['pass_percentage']
             temp.no_of_questions = request.POST['no_of_questions']
             temp.attempts_allowed = request.POST['attempts_allowed']
-            if(exam_detail.objects.filter(exam_name=temp.exam_name).count() == 0):
+            if(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).count() == 0):
                 exam_detail.objects.filter(id=temp.id).update(exam_name=temp.exam_name, description=temp.description, course_id=temp.course_id, year=temp.year, status=temp.status, start_time=temp.start_time, end_time=temp.end_time, pass_percentage=temp.pass_percentage, no_of_questions=temp.no_of_questions, attempts_allowed=temp.attempts_allowed, modified=datetime.datetime.now())
-                print("saved")
                 message = "Examination was successfully updated!"
                 return render(request ,'online_exam/faculty_modify_exam.html', {"message":message, "exams": exam_detail.objects.all()})
+            elif(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).count() == 1 and list(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).values("id"))[0]['id'] == int(request.POST['id'])):
+                exam_detail.objects.filter(id=temp.id).update(exam_name=temp.exam_name, description=temp.description, course_id=temp.course_id, year=temp.year, status=temp.status, start_time=temp.start_time, end_time=temp.end_time, pass_percentage=temp.pass_percentage, no_of_questions=temp.no_of_questions, attempts_allowed=temp.attempts_allowed, modified=datetime.datetime.now())
+                message = "Examination was successfully updated!"
             else:
                 wrong_message = "Sorry, exam already exists!"
                 return render(request ,'online_exam/faculty_modify_exam.html', {"wrong_message":wrong_message, "exams": exam_detail.objects.all()})
@@ -238,7 +300,11 @@ def faculty_update_course(request):
 def faculty_update_exam(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 0):
         result = exam_detail.objects.get(pk= int(request.POST['id']))
-        return render(request ,'online_exam/faculty_update_exam.html', {"result": result, "courses":course.objects.all()})
+        start_date = ((str(result.start_time).split())[0])
+        end_date = ((str(result.end_time).split())[0])
+        start_time = ((str(result.start_time).split())[1]).split("+")[0]
+        end_time = ((str(result.end_time).split())[1]).split("+")[0]
+        return render(request ,'online_exam/faculty_update_exam.html', {"result": result, "courses": course.objects.all(), "start_date":start_date, "end_date":end_date, "start_time":start_time, "end_time":end_time})
         #print("id---------------------------------------------------------", int(request.POST['id']))
     else:
         return redirect("../login")
@@ -310,6 +376,11 @@ def faculty_view_questions(request):
             A['description'] = i.description
             A['question_type'] = i.question_type.q_type
             A['subtopic'] = i.subtopic_id.subtopic_name
+            if(A['question_type']  == "Multiple Choice Single Answer" or A['question_type'] == "Multiple Choice Multiple Answer"):
+                options = ""
+                for j in option.objects.filter(question_id = i).all():
+                    options += (j.option_value + "; ")
+                A['options'] = options
             A['level'] = i.level_id.level_name
             A['exam'] = i.exam_id.exam_name
             A['score'] = i.score

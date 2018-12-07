@@ -119,3 +119,10 @@ class answer(models.Model):
     answer = models.TextField(null="True", blank=True)
     def __str__(self):
         return str(self.id) + "; " + str(self.question_id) + "; " + str(self.answer)
+
+class MatchTheColumns(models.Model):
+    question_id = models.ForeignKey(question_bank, on_delete=models.CASCADE)
+    question = models.TextField(null="True", blank=True)
+    answer = models.TextField(null="True", blank=True)
+    def __str__(self):
+        return str(self.id) + "; " + str(self.question_id) + "; " + str(self.question) + "; " + str(self.answer)
