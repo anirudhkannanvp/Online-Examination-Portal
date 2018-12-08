@@ -232,6 +232,15 @@ desired effect
 
     <!-- Main content -->
     <section class="content container-fluid">
+      {% if message %}
+      <div class="callout callout-success">
+        <p>{{message}}</p>
+      </div>
+      {% elif wrong_message %}
+      <div class="callout callout-danger">
+        <p>{{wrong_message}}</p>
+      </div>
+      {% endif %}
 
       <!--------------------------
         | Your Page Content Here |
@@ -263,8 +272,11 @@ desired effect
           {% elif i.status == 0 %}
           Inactive
           {% endif %}
-        </td><td>{{i.created}}</td><td>{{i.modified}}</td><td><form action = "../faculty_update_question/" method = "POST"><input type = "hidden" name = "id" value = "{{i.id}}">{% csrf_token %}<button class="btn btn-xs btn-primary" type="submit"><i class="fa fa-edit"></i>Modify</button></td></tr>
+        </td><td>{{i.created}}</td><td>{{i.modified}}</td><td><form action = "../faculty_update_question/" method = "POST"><input type = "hidden" name = "id" value = "{{i.id}}">{% csrf_token %}<button class="btn btn-xs btn-primary" type="submit"><i class="fa fa-edit"></i>Modify</button></td></form></td></tr>
       {% endfor %}
+    </tbody>
+  </table>
+
     </tbody>
   </table>
     </section>
