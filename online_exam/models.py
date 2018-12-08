@@ -91,10 +91,10 @@ class registration(models.Model):
     user_id = models.ForeignKey(user, on_delete = models.CASCADE)
     exam_id = models.ForeignKey(exam_detail, on_delete = models.CASCADE)
     attempt_no = models.IntegerField()
-    registered = models.IntegerField()
-    view_answers  = models.IntegerField()
-    answered = models.IntegerField()
-    registered_time = models.DateTimeField()
+    registered = models.IntegerField(default = 0)
+    view_answers  = models.IntegerField(default = 0)
+    answered = models.IntegerField(default = 0)
+    registered_time = models.DateTimeField(default = timezone.now)
     def __str__(self):
         return str(self.id) + "; " + str(self.user_id) + "; " + str(self.exam_id) + "; " + str(self.attempt_no) + "; " + str(self.registered) + "; " + str(self.view_answers) + "; " + str(self.answered) + "; " + str(self.registered_time)
 

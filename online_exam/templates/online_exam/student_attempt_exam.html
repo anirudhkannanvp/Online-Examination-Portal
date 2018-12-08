@@ -745,7 +745,7 @@ desired effect
             $.ajax({
               type: "POST",
               url: "../student_verify/",
-              data: {answer:answer, csrfmiddlewaretoken: '{{ csrf_token }}'},
+              data: {answer:JSON.stringify(answer), csrfmiddlewaretoken: '{{ csrf_token }}'},
               dataType: 'text',
               success:function(data){
                 /*sessionStorage.clear();*/

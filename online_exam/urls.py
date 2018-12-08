@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^student_dashboard/$', views.student_dashboard, name='student_dashboard'),
     url(r'^student_exams/$', views.student_exams, name='student_exams'),
     url(r'^student_attempt_exam/$', views.student_attempt_exam, name='student_attempt_exam'),
+    url(r'^student_approved_exams/$', views.student_approved_exams, name='student_approved_exams'),
     url(r'^student_verify/', views.student_verify, name='student_verify'),
     url(r'^student_profile/$', views.student_profile, name='student_profile'),
     url(r'^student_progress/$', views.student_progress, name='student_progress'),

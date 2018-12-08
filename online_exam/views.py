@@ -6,6 +6,7 @@ import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 import requests
 from .models import course, user, topic, subtopic, question_type, level, exam_detail, question_bank,  option, answer, registration, result, MatchTheColumns
 
@@ -222,6 +223,7 @@ def faculty_modify_exam(request):
             elif(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).count() == 1 and list(exam_detail.objects.filter(exam_name=temp.exam_name, course_id = temp.course_id, year = temp.year).values("id"))[0]['id'] == int(request.POST['id'])):
                 exam_detail.objects.filter(id=temp.id).update(exam_name=temp.exam_name, description=temp.description, course_id=temp.course_id, year=temp.year, status=temp.status, start_time=temp.start_time, end_time=temp.end_time, pass_percentage=temp.pass_percentage, no_of_questions=temp.no_of_questions, attempts_allowed=temp.attempts_allowed, modified=datetime.datetime.now())
                 message = "Examination was successfully updated!"
+                return render(request ,'online_exam/faculty_modify_exam.html', {"message":message, "exams": exam_detail.objects.all()})
             else:
                 wrong_message = "Sorry, exam already exists!"
                 return render(request ,'online_exam/faculty_modify_exam.html', {"wrong_message":wrong_message, "exams": exam_detail.objects.all()})
@@ -564,14 +566,36 @@ def student_dashboard(request):
 
 def student_exams(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 1):
-        return render(request, 'online_exam/student_exams.html', {"exams": exam_detail.objects.all()})
+        Final = dict()
+        if(request.method == "POST" and request.POST.get('exam_id', False) != False):
+            temp = registration()
+            temp.user_id = user.objects.get(id = request.session['id'])
+            temp.exam_id = exam_detail.objects.get(id = int(request.POST['exam_id']))
+            temp.attempt_no = registration.objects.filter(user_id = temp.user_id, exam_id = temp.exam_id).count() + 1
+            temp.save()
+            Final["message"] = "Applied for registration successfully!!"
+        exams = []
+        for i in exam_detail.objects.filter(status="1").all():
+            tmpdct = dict()
+            tmpdct["id"] = i.id
+            tmpdct["exam_name"] = i.exam_name
+            tmpdct["description"] = i.description
+            tmpdct["course_name"] = i.course_id.course_name
+            tmpdct["year"] = i.year
+            user_id = user.objects.get(id = request.session['id'])
+            exam_id = i
+            tmpdct["attempts_left"] = int(i.attempts_allowed) - registration.objects.filter(user_id = user_id, exam_id = exam_id).count()
+            exams.append(tmpdct)
+        Final["exams"] = exams
+        return render(request, 'online_exam/student_exams.html', Final)
     else:
         return redirect("../login")
 
 def student_attempt_exam(request):
-    if(request.session.get('id', False) != False and request.session.get('account_type', False) == 1):
-        questions = question_bank.objects.all()
+    if(request.session.get('id', False) != False and request.session.get('account_type', False) == 1 and request.POST.get('registration_id', False) != False and request.POST.get('exam_id', False) != False):
+        questions = question_bank.objects.filter(exam_id = exam_detail.objects.get(id = int(request.POST['exam_id']))).all()
         K = dict()
+        registration_id = request.POST['registration_id']
         exam_id = ""
         j = 0
         for i in questions:
@@ -587,6 +611,17 @@ def student_attempt_exam(request):
             else:
                 L['options'] = ""
             #L['answer'] = dict(answer.objects.filter(question_id = i.id).values("answer"))
+            if(i.question_type.id == 5):
+                m = 1
+                L['mtcQuestions'] = dict()
+                L['mtcAnswers'] = dict()
+                for l in MatchTheColumns.objects.filter(question_id = i).all():
+                    L['mtcQuestions'][m] = l.question    
+                    m += 1
+                m = 1
+                for l in MatchTheColumns.objects.filter(question_id = i).order_by('?').all():
+                    L['mtcAnswers'][m] = l.answer    
+                    m += 1
             L['level'] = i.level_id.level_name
             L['subtopic'] = i.subtopic_id.subtopic_name
             L['topic'] = i.subtopic_id.topic_id.topic_name
@@ -597,12 +632,48 @@ def student_attempt_exam(request):
             j += 1
             K[j] = L
         final = json.dumps(K)
-        return render(request, 'online_exam/student_attempt_exam.html', {"myArray":final, "sizeMyArray":j, "exam_id":exam_id})
+        return render(request, 'online_exam/student_attempt_exam.html', {"myArray":final, "sizeMyArray":j, "exam_id":exam_id, "registration_id":registration_id})
+    else:
+        return redirect("../login")
+def student_approved_exams(request):
+    if(request.session.get('id', False) != False and request.session.get('account_type', False) == 1):
+        Final = []
+        for i in registration.objects.filter(user_id = user.objects.get(pk = int(request.session['id']))): 
+            exams = dict()
+            exams["registration_id"] = i.id
+            exams["exam_id"] = i.exam_id.id
+            exams["exam_name"] = i.exam_id.exam_name
+            exams["start_time"] = i.exam_id.start_time
+            exams["end_time"] = i.exam_id.end_time
+            exams["course_name"] = i.exam_id.course_id.course_name
+            exams["description"] = i.exam_id.description
+            exams["attempt_no"] = i.attempt_no
+            exams["no_of_questions"] = i.exam_id.no_of_questions
+            exams["pass_percentage"] = i.exam_id.pass_percentage
+            start_time = i.exam_id.start_time
+            end_time = i.exam_id.end_time
+            if(start_time <= timezone.now() and end_time >= timezone.now()):
+                exams["attemptable"] = 1
+            else:
+                exams["attemptable"] = 0
+            Final.append(exams)
+        return render(request, 'online_exam/student_approved_exams.html', {"exams":Final, "current_time":datetime.datetime.now()}) 
     else:
         return redirect("../login")
 
 def student_verify(request):
     if(request.session.get('id', False) != False and request.session.get('account_type', False) == 1):
+        attempted = json.loads(request.POST.get("answer", False))
+        for i in attempted.keys():
+            attempted_answer = dict(attempted[i])
+            print(attempted_answer['answers'])
+            print(attempted_answer['question_id'])
+            answer = dict()
+            #ques_type = question_bank.objects.get(id = question_bank.objects.get(pk =attempted_answer['question_id'])).question_type.q_type
+            #if(ques_type == "Multiple Choice Single Answer" or ques_type == "Multiple Choice Multiple Answer"):
+            #    for j in answer.objects.filter(pk = question_bank.objects.get(pk =attempted_answer['question_id'])).all():
+            #        answer[j.answer] = option.objects.get(question_id = attempted_answer['question_id'], option_no = j.answer).option_value
+            
         return HttpResponse("HELLO")
     else:
         return redirect("../login")

@@ -163,51 +163,36 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
-
-        {% if message %}
-            <div class="callout callout-success">
-              <p>{{message}}</p>
+        {% for i in exams %}
+        <div class = "col-lg-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">{{i.exam_name}}</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
             </div>
-        {% elif wrong_message %}
-            <div class="callout callout-danger">
-              <p>{{wrong_message}}</p>
-            </div>
+          </div>
+        <div class="box-body" style="display: block;">
+          <div class="container" style="width:100%">
+            <div class="row"><div class="col-lg-6"><h4>Description:</h4></div><div class="col-lg-6">{{i.exam_name}}</div></div>
+            <div class="row"><div class="col-lg-6"><h4>Course:</h4></div><div class="col-lg-6">{{i.course_name}}</div></div>            
+            <div class="row"><div class="col-lg-6"><h4>No. of Questions:</h4></div><div class="col-lg-6">{{i.no_of_questions}}</div></div>
+            <div class="row"><div class="col-lg-6"><h4>Attempt no:</h4></div><div class="col-lg-6">{{i.attempt_no}}</div></div>
+            <div class="row"><div class="col-lg-6"><h4>Pass percentage:</h4></div><div class="col-lg-6">{{i.pass_percentage}}</div></div>
+            <div class="row"><div class="col-lg-6"><h4>Start Time:</h4></div><div class="col-lg-6">{{i.start_time}}</div></div>
+            <div class="row"><div class="col-lg-6"><h4>End Time:</h4></div><div class="col-lg-6">{{i.end_time}}</div></div>
+          </div>
+        </div>
+        {% if i.attemptable == 0%}
+        <div class="box-footer" style="display:block;"><button class="btn btn-primary disabled" type="submit" style="float:right">Attempt</button></div>
+        {% else %}
+        <div class="box-footer" style="display:block;"><form method = "POST" action = "../student_attempt_exam/"><input type = "hidden" name = "exam_id" value = "{{i.exam_id}}"><input type = "hidden" name = "registration_id" value = "{{i.registration_id}}">{% csrf_token %}<button class="btn btn-primary" type="submit" style="float:right">Attempt</button></div>
         {% endif %}
-            <a href="../student_approved_exams/"><button class = "btn btn-primary"><i class="fa fa-eye"></i>Approved Examinations</button></a>
-            <br>
-            <br>
-             
-        <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
-       
-          <thead>
-            <tr>
-              <th>S.No.</th>
-              <th>Examination</th>
-              <th>Description</th>
-              <th>Course</th>
-              <th>Year</th>
-              <th>Attempts Left</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in exams %}
-              <tr>
-                <td>{{i.id}}</td>
-                <td>{{i.exam_name}}</td>
-                <td>{{i.description}}</td>
-                <td>{{ i.course_name }}</td>
-                <td>{{ i.year }}</td>
-                <td>{{i.attempts_left}}</td>
-                {% if i.attempts_left == 0%}
-                <td><button class="btn btn-xs btn-primary" disabled=""><i class="fa fa-edit"></i>Register</button></td>
-                {% else %}
-                <td><form action = "{% url 'student_exams' %}" method = "POST"><input type = "hidden" name = "exam_id" value = "{{i.id}}">{% csrf_token %}<button class="btn btn-xs btn-primary" type="submit"><i class="fa fa-edit"></i>Register</button></form></td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
+      </div>
+    </div>
+      {% endfor %}
+
     </section>
   </div>
   <footer class="main-footer">
@@ -225,26 +210,5 @@ desired effect
 <script src="{% static "dataTables.bootstrap.min.js" %}"></script>
 <script src="{% static "dataTables.responsive.min.js" %}"></script>
 <script src="{% static "responsive.bootstrap.min.js" %}"></script>
-<script>
-  var Table;
-  $(document).ready(function() {
-  Table =  $('#example').DataTable( {
-    "order":[],
-        responsive: {
-            details: {
-                display: $.fn.dataTable.Responsive.display.modal( {
-                    header: function ( row ) {
-                        var data = row.data();
-                        return 'Details for '+data[0];
-                    }
-                } ),
-                renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                    tableClass: 'table'
-                } )
-            }
-        }
-    } );
-} );
-</script>
 </body>
 </html>
