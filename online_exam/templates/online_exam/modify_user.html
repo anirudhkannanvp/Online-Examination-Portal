@@ -192,19 +192,19 @@ desired effect
             <li><a href="../faculty_modify_question"><i class="fa fa-pencil"></i>Modify Question</a></li>
           </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview active">
           <a href="#"><i class="fa fa-gears"></i> <span>Management</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="../faculty_user_registrations"><i class="fa fa-users"></i>User Registrations</a></li>
+            <li class="active"><a href="../faculty_user_registrations"><i class="fa fa-users"></i>User Registrations</a></li>
             <li><a href="../faculty_exam_registrations"><i class="fa fa-drivers-license"></i>Exam Registrations</a></li>
             <li><a href="../faculty_evaluate"><i class="fa fa-check"></i>Evaluation</a></li>
           </ul>
         </li>
-        <li class="active"><a href="../faculty_profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+        <li><a href="../faculty_profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
         <!--<li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>-->
       </ul>
       <!-- /.sidebar-menu -->
@@ -217,10 +217,12 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Your Profile
+        User Profile
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+        <li><a href="#"><i class="fa fa-gears"></i>Management</a></li>
+        <li><a href="#"><i class="fa fa-user"></i>User Registrations</a></li>
+        <li><a href="#"><i class="fa fa-edit"></i>Modify User Profile</a></li>
       </ol>
     </section>
 
@@ -244,7 +246,7 @@ desired effect
               <p>{{wrong_message}}</p>
             </div>
             {% endif %}
-                        <form action="../faculty_profile/" method="post">{% csrf_token %}
+                        <form action="../modify_user/" method="post">{% csrf_token %}
               <div class="box box-info">
                 <div class="box-header with-border">
                   <h3 class="box-title">Your Profile</h3>
@@ -265,9 +267,22 @@ desired effect
                     <input type="email" class="form-control" name="email" placeholder="Email" value = "{{ currentUser.email }}" required>
                     <span class="glyphicon glyphicon-envelope form-control-feedback btn-info"></span>
                   </div>
-                  
+                  <div class="form-group">
+                            <label>Account type:</label>
+                            <select class="form-control" name="account_type" id="account_type" required="">
+                              {% if currentUser.account_type %}
+                                <option value="">Select</option>
+                                <option value="0">Admin</option>
+                                <option value="1" selected="selected">User</option>
+                              {% else %}
+                                <option value="">Select</option>
+                                <option value="0" selected="selected">Admin</option>
+                                <option value="1">User</option>
+                              {% endif %}
+                            </select>
+
+                  </div>
                   <div class = "form-group">
-                    <input type="hidden" class="form-control" name="flag" placeholder="flag" value="1">
                   <input type="hidden" name="user_id" value="{{ currentUser.id }}">
                   <button class="btn btn-info" type="submit" style="float:right;"><i class='fa fa-edit'></i>Update</button>
                   </div>
@@ -277,7 +292,7 @@ desired effect
                   <div class = "form-group">
                   <h4>Change Password</h4>
                   </div>
-                  <form action="../faculty_profile/" method = "post">
+                  <form action="../modify_user/" method = "post">
                   <div class="form-group has-feedback">
                     <input class="form-control" type="password" name="password" placeholder = "Enter Password" id = "password" onchange="validatePassword();" required>
                     <span class="glyphicon glyphicon-lock form-control-feedback btn-info"></span>
@@ -286,10 +301,8 @@ desired effect
                     <input class="form-control" type="password" placeholder = "Re-enter Password" id = "confirm_password" onkeyup="validatePassword();" required>
                     <span class="glyphicon glyphicon-log-in form-control-feedback btn-info"></span>
                   </div> 
-                  
                   <div class="form-group">
-                    <input type="hidden" class="form-control" name="flag" placeholder="flag" value="2">
-                    <input type="hidden" name="user_id" value="{{ currentUser.id }}">
+                    <input type="hidden" name="user_id" value="{{currentUser.id}}">
                   <button class="btn btn-info" type="submit" style="float:right;"><i class='fa fa-lock'></i>Update</button>
                   </form>
                   </div>

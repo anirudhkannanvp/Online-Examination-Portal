@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'exam.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'online_exam_2',
+        'NAME': 'online_exam',
         'USER':'root',
-        'PASSWORD':'parkhi@1212',
+        'PASSWORD':'sivani',
         'HOST': 'localhost',
         'PORT': '3306',
     }

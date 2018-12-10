@@ -103,7 +103,7 @@ class result(models.Model):
     question_id = models.ForeignKey(question_bank, on_delete = models.CASCADE)
     answer = models.TextField(null="True", blank=True)
     score = models.FloatField()
-    verify = models.IntegerField()
+    verify = models.IntegerField(default = 0)
     def __str__(self):  
         return str(self.id) + "; " + str(self.registration_id) + "; " + str(self.question_id) + "; " + str(self.answer) + "; " + str(self.score) + "; " + str(self.verify) 
 

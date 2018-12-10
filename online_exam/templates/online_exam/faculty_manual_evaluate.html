@@ -9,7 +9,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>IIITS| Faculty_profile</title>
+  <title>IIITS| Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}">
@@ -23,6 +23,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
   <link rel="stylesheet" href="{% static "dist/css/skins/skin-purple.min.css" %}">
+
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+  <!--<link rel="stylesheet" href="{% static "bootstrap.min.css" %}">-->
+  <link rel="stylesheet" href="{% static "dataTables.bootstrap.min.css" %}">
+  <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">-->
+  <link rel="stylesheet" href="{% static "buttons.dataTables.min.css" %}">
+  <link rel="stylesheet" href="{% static "responsive.bootstrap.min.css" %}">
+
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -192,19 +200,19 @@ desired effect
             <li><a href="../faculty_modify_question"><i class="fa fa-pencil"></i>Modify Question</a></li>
           </ul>
         </li>
-        <li class="treeview">
+        <li class="treeview active">
           <a href="#"><i class="fa fa-gears"></i> <span>Management</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
           </a>
-          <ul class="treeview-menu">
+          <ul class="treeview-menu menu-open">
             <li><a href="../faculty_user_registrations"><i class="fa fa-users"></i>User Registrations</a></li>
             <li><a href="../faculty_exam_registrations"><i class="fa fa-drivers-license"></i>Exam Registrations</a></li>
-            <li><a href="../faculty_evaluate"><i class="fa fa-check"></i>Evaluation</a></li>
+            <li class="active"><a href="../faculty_evaluate"><i class="fa fa-check"></i>Evaluation</a></li>
           </ul>
         </li>
-        <li class="active"><a href="../faculty_profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+        <li><a href="../faculty_profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
         <!--<li><a href="#"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>-->
       </ul>
       <!-- /.sidebar-menu -->
@@ -216,12 +224,15 @@ desired effect
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-        Your Profile
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
-      </ol>
+        <h1>
+            Evaluation
+            
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-gears"></i> Management</a></li>
+            <li><a href="../faculty_evaluate"><i class="fa fa-check"></i> Evaluation</a></li>
+            <li>Answer Key</li>
+          </ol>
     </section>
 
     <!-- Main content -->
@@ -230,77 +241,8 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
-        <div class = "row">
-        <div class = "col-lg-4">
-
-        </div>
-        <div class = "col-lg-4">
-            {% if message %}
-            <div class="callout callout-success">
-              <p>{{message}}</p>
-            </div>
-            {% elif wrong_message %}
-            <div class="callout callout-danger">
-              <p>{{wrong_message}}</p>
-            </div>
-            {% endif %}
-                        <form action="../faculty_profile/" method="post">{% csrf_token %}
-              <div class="box box-info">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Your Profile</h3>
-                </div>
-                <div class="box-body">
-                  <div class="form-group has-feedback">
-                    <input type="text" name = "first_name" class="form-control" placeholder="First Name" value="{{ currentUser.first_name }}" required/><span class="glyphicon glyphicon-user form-control-feedback btn-info"></span>
-                  </div>
-                  <div class="form-group has-feedback">
-                    <input type="text" class="form-control" name="last_name" placeholder="Last Name" value="{{ currentUser.last_name }}" required>
-                    <span class="glyphicon glyphicon-user form-control-feedback btn-info"></span>
-                  </div>
-                  <div class="form-group has-feedback">
-                    <input type="tel" class="form-control" name="phone"  pattern="^\d{10}$"  placeholder="1234567890" value = "{{ currentUser.phone }}" required>
-                    <span class="glyphicon glyphicon-earphone form-control-feedback btn-info"></span>
-                  </div>
-                  <div class="form-group has-feedback">
-                    <input type="email" class="form-control" name="email" placeholder="Email" value = "{{ currentUser.email }}" required>
-                    <span class="glyphicon glyphicon-envelope form-control-feedback btn-info"></span>
-                  </div>
-                  
-                  <div class = "form-group">
-                    <input type="hidden" class="form-control" name="flag" placeholder="flag" value="1">
-                  <input type="hidden" name="user_id" value="{{ currentUser.id }}">
-                  <button class="btn btn-info" type="submit" style="float:right;"><i class='fa fa-edit'></i>Update</button>
-                  </div>
-                  </form>
-                </div>
-                <div class="box-footer with-border">
-                  <div class = "form-group">
-                  <h4>Change Password</h4>
-                  </div>
-                  <form action="../faculty_profile/" method = "post">
-                  <div class="form-group has-feedback">
-                    <input class="form-control" type="password" name="password" placeholder = "Enter Password" id = "password" onchange="validatePassword();" required>
-                    <span class="glyphicon glyphicon-lock form-control-feedback btn-info"></span>
-                  </div>
-                  <div class="form-group has-feedback">
-                    <input class="form-control" type="password" placeholder = "Re-enter Password" id = "confirm_password" onkeyup="validatePassword();" required>
-                    <span class="glyphicon glyphicon-log-in form-control-feedback btn-info"></span>
-                  </div> 
-                  
-                  <div class="form-group">
-                    <input type="hidden" class="form-control" name="flag" placeholder="flag" value="2">
-                    <input type="hidden" name="user_id" value="{{ currentUser.id }}">
-                  <button class="btn btn-info" type="submit" style="float:right;"><i class='fa fa-lock'></i>Update</button>
-                  </form>
-                  </div>
-                </div>
-              </div>    
-        </div>
-        <div class = "col-lg-4">
-            
-        </div>
-      </div>
-
+        <table id="example" class="table table-striped table-bordered textwrap" style="width:100%">
+        </table>
     </section>
   </div>
   <footer class="main-footer">
@@ -313,17 +255,193 @@ desired effect
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
 <script src="{% static "dist/js/adminlte.min.js" %}"></script>
-</body>
+<script src="{% static "jquery.dataTables.min.js" %}"></script>
+<script src="{% static "dataTables.bootstrap.min.js" %}"></script>
+<script src="{% static "dataTables.responsive.min.js" %}"></script>
+<script src="{% static "responsive.bootstrap.min.js" %}"></script>
 <script>
-  var password = document.getElementById("password")
-  , confirm_password = document.getElementById("confirm_password");
-  
-  function validatePassword(){
-  if(password.value != confirm_password.value) {
-    confirm_password.setCustomValidity("Passwords Don't Match");
-  } else {
-    confirm_password.setCustomValidity('');
-  }
-  }
+  var Table, order = [], start = false;
+  $(document).ready(function() {
+    var i, j;
+    var input_data = {{data|safe}};
+    createTable(input_data);
+});
+
+ function createTable(input_data)
+ {
+   var text = "<thead><tr><th>Question</th><th>Options</th><th>Answer</th><th>Your Answer</th><th>Mark as</th><th>Status</th><th>Score</th></tr></thead>";
+    text += "<tbody>";
+    for(i = 1; i <= Object.keys(input_data).length; i++)
+    {
+     var myArray = {'exam_id': '{{exam_id}}', 'score':input_data[i]['score'], 'result_id':input_data[i]['result_id'], 'user_exam_attempt_id':'{{registration_id}}'};
+     text += "<tr><td>"+input_data[i]['question']+"</td><td>";
+     if(input_data[i]['question_type'] == "Multiple Choice Single Answer" || input_data[i]['question_type'] == "Multiple Choice Multiple Answer")
+     {
+       for(var key in input_data[i]['options'])
+       {
+         text += input_data[i]['options'][key] + "; ";
+       }
+     }
+     else
+     {
+       text += "None";
+     }
+     text += "</td><td>";
+     text += input_data[i]['answer'];
+     text += "</td><td>";
+     text += input_data[i]['your_answers'];
+     text += "</td><td>";
+     if(input_data[i]['question_type'] == "Multiple Choice Single Answer" || input_data[i]['question_type'] == "Multiple Choice Multiple Answer" || input_data[i]['question_type'] == "Match the Column")
+     {
+       if(input_data[i]['gained_score'] == input_data[i]['score'])
+       {
+         text += "<select class='btn btn-success btn-xs disabled'>";
+         text += "<option value='1' selected = 'selected'>Correct</option>";
+       }
+       else
+       {
+         text += "<select class='btn btn-danger btn-xs disabled'>";
+         text += "<option value='0' selected = 'selected'>Wrong</option>";
+       }
+     } 
+     else if(input_data[i]['verify'] != "1")
+     {
+       text += "<select class='btn btn-warning btn-xs changeAnsStatus'>";
+       text += "<option value=''>Pending</option>";
+       text += "<option value='"+ JSON.stringify(myArray) +"' data-dismiss = 'modal'>Correct</option>";
+       text += "<option value='"+ JSON.stringify(myArray) +"' data-dismiss = 'modal'>Wrong</option>";
+     }
+     else if(input_data[i]['gained_score'] == input_data[i]['score'])
+     {
+       text += "<select class='btn btn-success btn-xs changeAnsStatus' >";
+       text += "<option value='"+ JSON.stringify(myArray) +"' selected = 'selected'>Correct</option>";
+       text += "<option value='"+ JSON.stringify(myArray) +"'  data-dismiss = 'modal'>Wrong</option>";
+     }
+     else
+     {
+       text += "<select class='btn btn-danger btn-xs changeAnsStatus'>";
+       text += "<option value='"+ JSON.stringify(myArray) +"' data-dismiss = 'modal'>Correct</option>";
+       text += "<option value='"+ JSON.stringify(myArray) +"' selected = 'selected'>Wrong</option>";
+     }
+     text += "</td><td>";
+     if(input_data[i]['verify'] == "1")
+     {
+       text += "<button class='btn btn-primary btn-xs'><i class='fa fa-check-square-o'></i>&nbsp;Verified</button>";
+     }
+     else
+     {
+       text += "<button class='btn btn-warning btn-xs'><i class='fa fa-warning'></i>&nbsp;Not Verified</button>";
+     }
+     text += "</td><td>";
+     text += input_data[i]['gained_score'];
+     text += "</td></tr>";
+    }
+    text += "</tbody>";
+    document.getElementById('example').innerHTML = text;
+    if(start == true)
+    {
+      order = Table.order();
+    } 
+    Table = $('#example').DataTable( {
+        "destroy": true,
+        "order": order,
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal( {
+                    header: function ( row ) {
+                        var data = row.data();
+                        return 'Details for '+data[0];
+                    }
+                } ),
+                renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                    tableClass: 'table'
+                } )
+            }
+        }
+    });
+    start = true;
+ }
 </script>
+<script>
+  $(document).on('change', ".changeAnsStatus",function(){
+    var changedDetails = $(this);
+    if(changedDetails.val() != '')
+    {
+      var obtained_details = JSON.parse(changedDetails.val());
+      obtained_details['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+    var selected_option = $("option:selected", this);
+    if(selected_option.text() == "Correct")
+    {
+      obtained_details['check'] = 1;
+      console.log(obtained_details);
+      $('.modal').modal('hide');
+    $.ajax({
+      type: "POST",
+      url: "../faculty_manual_evaluate/",
+      data: obtained_details,
+      dataType: 'text',
+      success:function(data){
+        console.log(data);
+       createTable(JSON.parse(data));
+      },
+        error: function (jqXHR, exception) {
+          var msg = '';
+          if (jqXHR.status === 0) {
+              msg = 'Not connect.\n Verify Network.';
+          } else if (jqXHR.status == 404) {
+              msg = 'Requested page not found. [404]';
+          } else if (jqXHR.status == 500) {
+              msg = 'Internal Server Error [500].';
+          } else if (exception === 'parsererror') {
+              msg = 'Requested JSON parse failed.';
+          } else if (exception === 'timeout') {
+              msg = 'Time out error.';
+          } else if (exception === 'abort') {
+              msg = 'Ajax request aborted.';
+          } else {
+              msg = 'Uncaught Error.\n' + jqXHR.responseText;
+          }
+          console.log(msg);
+      },
+    });
+    }
+    else if(selected_option.text() == "Wrong")
+    {
+      obtained_details['check'] = 0;
+      console.log(obtained_details);
+      $('.modal').modal('hide');
+    $.ajax({
+      type: "POST",
+      url: "../faculty_manual_evaluate/",
+      data: obtained_details,
+      dataType: 'text',
+      success:function(data){
+        console.log(data);
+       createTable(JSON.parse(data));
+      },
+      error: function (jqXHR, exception) {
+        var msg = '';
+        if (jqXHR.status === 0) {
+            msg = 'Not connect.\n Verify Network.';
+        } else if (jqXHR.status == 404) {
+            msg = 'Requested page not found. [404]';
+        } else if (jqXHR.status == 500) {
+            msg = 'Internal Server Error [500].';
+        } else if (exception === 'parsererror') {
+            msg = 'Requested JSON parse failed.';
+        } else if (exception === 'timeout') {
+            msg = 'Time out error.';
+        } else if (exception === 'abort') {
+            msg = 'Ajax request aborted.';
+        } else {
+            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+        console.log(msg);
+    },
+    });
+    }
+    }
+});
+</script>
+</body>
 </html>

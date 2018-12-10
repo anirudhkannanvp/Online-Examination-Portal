@@ -19,6 +19,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{% static "bower_components/Ionicons/css/ionicons.min.css" %}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static "dist/css/AdminLTE.min.css" %}">
+  <link rel="stylesheet" href="{% static "dataTables.bootstrap.min.css" %}">
+  <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">-->
+  <link rel="stylesheet" href="{% static "buttons.dataTables.min.css" %}">
+  <link rel="stylesheet" href="{% static "responsive.bootstrap.min.css" %}">
+
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
@@ -217,23 +222,51 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Exam Registrations
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-gears"></i> Management</a></li>
+        <li><a href="#"><i class="fa fa-drivers-license"></i> Exam Registrations</a></li>
       </ol>
     </section>
 
     <!-- Main content -->
     <section class="content container-fluid">
-
-      <!--------------------------
-        | Your Page Content Here |
-        -------------------------->
-
-    </section>
+ <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
+ <thead>
+ <tr>
+   
+ <th>User Name</th>
+ <th>Email</th>
+ <th>Phone</th>
+ <th>Examination</th>
+ <th>Registered Time</th>
+ <th>Attempt no.</th>
+ <th>Status</th>
+ </tr>
+ </thead>
+ <tbody>
+ {% for t in data %}
+ 
+    <tr>
+      <td>{{ t.first_name }} {{ t.last_name }}</td>
+      <td>{{ t.email }}</td>
+      <td>{{ t.phone }}</td>
+      <td>{{ t.exam_name }}</td>
+      <td>{{t.registered_time}}</td>
+      <td>{{ t.attempt_no }}</td>
+      <td align="center">
+      {% if t.registered %}
+        <button class="btn btn-success btn-xs statusChange registerStatus{{t.exam_id}}" type="button" value="{{ t.exam_id }}"><i class="fa fa-check"></i>Registered</button>
+        {% else %}
+        <button class="btn btn-warning btn-xs statusChange registerStatus{{t.exam_id}}" type="button" value="{{ t.exam_id }}"><i class="fa fa-times"></i>Unregistered</button>
+        {% endif %}
+        </td>
+      {% endfor %}
+  </tr>
+ </tbody>
+ </table>
+ </section>
   </div>
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
@@ -245,5 +278,89 @@ desired effect
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
 <script src="{% static "dist/js/adminlte.min.js" %}"></script>
+<script src="{% static "bootstrap.min.js" %}"></script>
+<script src="{% static "jquery.dataTables.min.js" %}"></script>
+<script src="{% static "dataTables.bootstrap.min.js" %}"></script>
+<script src="{% static "dataTables.responsive.min.js" %}"></script>
+<script src="{% static "responsive.bootstrap.min.js" %}"></script>
+
+<script>
+          var Table;
+          $(document).ready(function() {
+          Table =  $('#example').DataTable( {
+                responsive: {
+                    details: {
+                        display: $.fn.dataTable.Responsive.display.modal( {
+                            header: function ( row ) {
+                                var data = row.data();
+                                return 'Details for '+data[0];
+                            }
+                        } ),
+                        renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                            tableClass: 'table'
+                        } )
+                    }
+                }
+            } );
+        } );
+      </script>
+
+<script>
+    $(document).on('click', ".statusChange",function(){
+      var user_exam_attempt_id = $(this).val(), i;
+      console.log(user_exam_attempt_id);
+      $.ajax({
+        type: "POST",
+        url: '../faculty_exam_registrations/',
+        data: {user_exam_attempt_id:user_exam_attempt_id, csrfmiddlewaretoken: '{{ csrf_token }}'},
+        dataType: 'text',
+        success:function(data){
+          console.log("psjdjec");
+            if(data == "0")
+            {
+              console.log("123");
+              var clickedButtons = document.getElementsByClassName("registerStatus" + user_exam_attempt_id);
+              for(i = 0; i < clickedButtons.length; i++)
+              {
+                clickedButtons[i].classList.remove("btn-success");
+                clickedButtons[i].classList.add("btn-warning");
+                clickedButtons[i].innerHTML = "<i class='fa fa-times'></i>Unregistered";
+              }
+            }
+            else if(data == "1")
+            {
+              console.log("456");
+              var clickedButtons = document.getElementsByClassName("registerStatus" + user_exam_attempt_id);
+              for(i = 0; i < clickedButtons.length; i++)
+              {
+                clickedButtons[i].classList.remove("btn-warning");
+                clickedButtons[i].classList.add("btn-success");
+                clickedButtons[i].innerHTML = "<i class='fa fa-check'></i>Registered";
+              }
+            }
+            var order = Table.order();
+            var myTable =  $('#example').DataTable( {
+              "destroy":true,
+              "order": order,
+              responsive: {
+                  details: {
+                      display: $.fn.dataTable.Responsive.display.modal( {
+                          header: function ( row ) {
+                              var data = row.data();
+                              return 'Details for '+data[0];
+                          }
+                      } ),
+                      renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                          tableClass: 'table'
+                      } )
+                  }
+              },
+          } );
+          Table = myTable;
+        }
+      });
+  });
+ 
+    </script>
 </body>
 </html>

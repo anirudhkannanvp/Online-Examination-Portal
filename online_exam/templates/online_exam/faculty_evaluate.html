@@ -19,6 +19,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{% static "bower_components/Ionicons/css/ionicons.min.css" %}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static "dist/css/AdminLTE.min.css" %}">
+  <link rel="stylesheet" href="{% static "dataTables.bootstrap.min.css" %}">
+  <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">-->
+  <link rel="stylesheet" href="{% static "buttons.dataTables.min.css" %}">
+  <link rel="stylesheet" href="{% static "responsive.bootstrap.min.css" %}">
+
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect. -->
@@ -217,12 +222,12 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Evaluation
+        
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active">You are here</li>
+        <li><a href="#"><i class="fa fa-gears"></i> Management</a></li>
+        <li><a href="#"><i class="fa fa-check"></i> Evaluation</a></li>
       </ol>
     </section>
 
@@ -232,6 +237,40 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+        <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
+           <thead>
+           <tr>
+           <th>Exam Name</th>
+           <th>Course</th>
+           <th>Year</th>
+           <th>Description</th>
+           <th>Duration</th>
+           <th>Number of Questions</th>
+           <th>Pass Percentage</th>
+           <th>Actions</th>
+           </tr>
+           </thead>
+           <tbody>
+           {% for t in data %}
+              <tr><td>{{ t.exam_name }}</td>
+                <td>{{t.course}}</td>
+                <td>{{t.year}}</td>
+                <td>{{ t.description }}</td>
+                <td>{{ t.duration }}</td>
+                <td>{{ t.no_of_questions }}</td>
+                <td>{{ t.pass_percentage }}</td>
+                <td align="center">
+                  <form action = "../faculty_register_evaluate/" method = "POST">
+                  {% csrf_token %}
+                  <input type = "hidden" name="exam_id" value = "{{t.exam_id}}">
+                  <button class="btn btn-success btn-xs" type="submit"><i class="fa fa-check"></i>Evaluate</button>
+                </form>
+                </td>
+            {% endfor %}
+            </tr>
+           </tbody>
+           </table>
+
 
     </section>
   </div>
@@ -245,5 +284,41 @@ desired effect
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 <script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
 <script src="{% static "dist/js/adminlte.min.js" %}"></script>
+<script src="{% static "jquery.dataTables.min.js" %}"></script>
+<script src="{% static "dataTables.bootstrap.min.js" %}"></script>
+<script src="{% static "dataTables.responsive.min.js" %}"></script>
+<script src="{% static "responsive.bootstrap.min.js" %}"></script>
+<script src="{% static "dataTables.buttons.min.js" %}"></script>
+<script src="{% static "buttons.flash.min.js" %}"></script>
+<script src="{% static "jszip.min.js" %}"></script>
+<script src="{% static "pdfmake.min.js" %}"></script>
+<script src="{% static "vfs_fonts.js" %}"></script>
+<script src="{% static "buttons.html5.min.js" %}"></script>
+<script src="{% static "buttons.print.min.js" %}"></script>
+<script>
+  var Table;
+  $(document).ready(function() {
+  Table =  $('#example').DataTable( {
+    dom: 'Bfrtip',
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+    "order":[],
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal( {
+                    header: function ( row ) {
+                        var data = row.data();
+                        return 'Details for '+data[0];
+                    }
+                } ),
+                renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                    tableClass: 'table'
+                } )
+            }
+        }
+    } );
+} );
+</script>
 </body>
 </html>

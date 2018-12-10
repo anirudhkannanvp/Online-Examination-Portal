@@ -107,8 +107,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
             overflow-y:auto;
           }
           </style>
-  
-  </head>
+          <style type="text/css">
+            *.unselectable{
+              -moz-user-select: -moz-none;
+              -khtml-user-select: none;
+              -webkit-user-select: none;
+
+              -ms-user-select:none;
+              user-select:none;
+            }
+          </style>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -222,11 +230,10 @@ desired effect
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Dashboard
-        <small>See your progress and build up your skills</small>
+        Exams
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="../student_exams"><i class="fa fa-clipboard"></i> Examinations</a></li>
         <li class="active" id = "exam_nav"></li>
       </ol>
     </section>
@@ -237,6 +244,7 @@ desired effect
       <!--------------------------
         | Your Page Content Here |
         -------------------------->
+        <div class = "unselectable">
         <div class="box box-info" style="height:650px">
           <div class="box-header with-border">
             <h3 class="box-title" id = "exam_name"></h3>
@@ -275,6 +283,7 @@ desired effect
           </div>
           <h5>Note: Please do not refresh the page or navigate during the examination</h5>
         </div>
+      </div>
     </section>
   </div>
   <footer class="main-footer">
@@ -306,6 +315,7 @@ desired effect
       console.log(data);
       console.log(answer);
       sessionStorage.setItem('exam_id', {{exam_id}});
+      sessionStorage.setItem('registration_id', {{registration_id}})
       sessionStorage.setItem('question', JSON.stringify(data));
       sessionStorage.setItem('answer', JSON.stringify(answer));
       sessionStorage.setItem('value', value);
@@ -357,7 +367,7 @@ desired effect
       var seconds;
       if(sessionStorage.getItem('seconds') == null)
       {
-        seconds = 1800;
+        seconds = {{seconds}};
       }
       else
       {
@@ -378,10 +388,14 @@ desired effect
           hours = "0" + hours; 
         }
           document.getElementById('countdown').innerHTML = hours + ":" + minutes + ":" + remainingSeconds;
-          if (seconds == 0) {
+          if (seconds == 1) {
               clearInterval(countdownTimer);
               document.getElementById('countdown').innerHTML = "Completed";
-              verify();
+              if(sessionStorage.getItem('registration_id') != null)
+              {
+                console.log(sessionStorage.getItem('registration_id'));
+                verify();
+              }
           } else {
               seconds--;
               sessionStorage.setItem('seconds', seconds);
@@ -738,17 +752,17 @@ desired effect
             document.getElementById('Ans').innerHTML = text; 
             document.getElementById("exam_name").innerHTML = data[question]['exam'];
             document.getElementById("exam_nav").innerHTML = data[question]['exam'];
-            document.getElementById("subject").innerHTML = "<span style='font-size:18px'>Subject:&nbsp;</span><span style='font-size:16px'>" + data[question]['subject'] + "</span>";
+            //document.getElementById("subject").innerHTML = "<span style='font-size:18px'>Subject:&nbsp;</span><span style='font-size:16px'>" + data[question]['subject'] + "</span>";
           }
           function verify()
           {
             $.ajax({
               type: "POST",
               url: "../student_verify/",
-              data: {answer:JSON.stringify(answer), csrfmiddlewaretoken: '{{ csrf_token }}'},
+              data: {answer:JSON.stringify(answer), csrfmiddlewaretoken: '{{ csrf_token }}', registration_id:sessionStorage.getItem('registration_id')},
               dataType: 'text',
               success:function(data){
-                /*sessionStorage.clear();*/
+                sessionStorage.clear();
                 text = "";
                 text +="<h4>You have scored "+data+" marks.</h4>";
                 text +="<h5>Note: Only Multiple Choice answers and Match the Column have been corrected. The rest of the questions will be manually examined by the examiner and will be notified to you soon.</h5>";
